@@ -5,7 +5,7 @@ import ComposerAvatar from './ComposerAvatar';
 import { ChangeEvent, useEffect, useMemo, useRef, useState } from 'react';
 import { supabase } from '@/lib/supabaseClient';
 import { EDIT_WINDOW_MS } from '../utils';
-import SaveToJournalButton from './SaveToJournalButton';
+import SaveToJournalButton from './SaveToJournalButton'
 import type { ChatMode, Message, ProfileMini, ProfilePreviewData } from '../types';
 
 type SparkEvent = {
@@ -45,6 +45,7 @@ type MediaMessageSpark = {
 
 type ChatPanelProps = {
   userId: string | null;
+  membershipTier?: string | null;
   activeConversationId: string | null;
   activeOther: ProfileMini | null;
   requestedAnchorMessageId: string | null;
@@ -61,10 +62,12 @@ type ChatPanelProps = {
   activeTypingName: string | null;
   activeOtherOnline: boolean;
   activeOtherPresenceLabel: string;
+  hasLanguageOverlap: boolean;
   myChatMode: ChatMode | null;
   isDesktop: boolean;
   viewerTimezone: string | null;
   remainingSparkLimit: number | null;
+  targetLanguage: string | null;
   onBack: () => void;
   onOpenProfilePreview: (profile: ProfilePreviewData) => void;
   onChangeNewMessage: (value: string) => void | Promise<void>;
@@ -473,6 +476,7 @@ function getMessageReactions(message: Message): MessageReaction[] {
 
 export default function ChatPanel({
   userId,
+  membershipTier,
   activeConversationId,
   activeOther,
   requestedAnchorMessageId,
@@ -489,10 +493,12 @@ export default function ChatPanel({
   activeTypingName,
   activeOtherOnline,
   activeOtherPresenceLabel,
+  hasLanguageOverlap,
   myChatMode,
   isDesktop,
   viewerTimezone,
   remainingSparkLimit,
+  targetLanguage,
   onBack,
   onOpenProfilePreview,
   onChangeNewMessage,
@@ -502,7 +508,100 @@ export default function ChatPanel({
   onBlock,
   onUnblock,
 }: ChatPanelProps) {
-  const [mounted, setMounted] = useState(false);
+const [mounted, setMounted] = useState(false);
+const [autoTranslate, setAutoTranslate] = useState(false);
+const [debugLoadedUserId, setDebugLoadedUserId] = useState<string | null>(null);
+const [translatedMessages, setTranslatedMessages] = useState<Record<string, string>>({});
+
+useEffect(() => {
+  if (!autoTranslate) return;
+  if (!targetLanguage) return;
+  if (hasLanguageOverlap) return;
+  if (messages.length === 0) return;
+
+  const run = async () => {
+    const updates: Record<string, string> = {};
+
+    for (const m of messages.slice(-5)) {
+      // ONLY translate OTHER person's messages
+      if (m.sender_id === userId) continue;
+
+      // must have content
+      if (!m.content) continue;
+
+      // only text
+      if (m.message_kind && m.message_kind !== 'text') continue;
+
+      // already translated
+      if (translatedMessages[m.id]) continue;
+
+      // prevent duplicate requests
+      if (inflightRef.current.has(m.id)) continue;
+      inflightRef.current.add(m.id);
+
+      try {
+        const res = await fetch('/api/translate', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            text: m.content,
+            targetLanguage,
+          }),
+        });
+
+        if (!res.ok) continue;
+
+        const data = await res.json();
+
+        if (data?.translated) {
+          updates[m.id] = data.translated;
+        }
+      } catch (err) {
+        console.error('translate error', err);
+      } finally {
+        inflightRef.current.delete(m.id);
+      }
+    }
+
+    if (Object.keys(updates).length > 0) {
+      setTranslatedMessages((prev) => ({
+        ...prev,
+        ...updates,
+      }));
+    }
+  };
+
+  void run();
+}, [autoTranslate, targetLanguage, hasLanguageOverlap, messages, userId]);
+
+useEffect(() => {
+  if (!activeConversationId || !userId) {
+    setAutoTranslate(false);
+    setDebugLoadedUserId(null);
+    return;
+  }
+
+  const loadTranslationSetting = async () => {
+    setDebugLoadedUserId(userId);
+
+    const { data, error } = await supabase
+      .from('conversation_translation_settings')
+      .select('enabled, user_id')
+      .eq('conversation_id', activeConversationId);
+
+    if (error) {
+      setAutoTranslate(false);
+      return;
+    }
+
+    const row = (data || []).find((r) => String(r.user_id) === String(userId));
+    setAutoTranslate(row?.enabled === true);
+  };
+
+  void loadTranslationSetting();
+}, [activeConversationId, userId]);
   const [showJumpToLatest, setShowJumpToLatest] = useState(false);
   const [sparkOverlay, setSparkOverlay] = useState<SparkBurstOverlay | null>(null);
   const [emojiOpen, setEmojiOpen] = useState(false);
@@ -516,9 +615,14 @@ export default function ChatPanel({
   const textareaRef = useRef<HTMLTextAreaElement | null>(null);
   const fileInputRef = useRef<HTMLInputElement | null>(null);
 
+  const inflightRef = useRef<Set<string>>(new Set());
+
+
   const [selectedMediaFile, setSelectedMediaFile] = useState<File | null>(null);
+  const [sendLocked, setSendLocked] = useState(false);
   const [selectedMediaPreviewUrl, setSelectedMediaPreviewUrl] = useState<string | null>(null);
   const [selectedMediaKind, setSelectedMediaKind] = useState<'image' | 'video' | null>(null);
+  const [selectedMediaDuration, setSelectedMediaDuration] = useState<number | null>(null);
   const scrollAreaRef = useRef<HTMLDivElement | null>(null);
   const emojiPanelRef = useRef<HTMLDivElement | null>(null);
   const emojiButtonRef = useRef<HTMLButtonElement | null>(null);
@@ -666,7 +770,7 @@ export default function ChatPanel({
       return;
     }
 
-    if (isVideo) {
+ if (isVideo) {
   if (file.size > 20 * 1024 * 1024) {
     alert('Video must be 20MB or smaller.');
     event.target.value = '';
@@ -679,9 +783,22 @@ export default function ChatPanel({
 
   const previewUrl = URL.createObjectURL(file);
 
-  setSelectedMediaFile(file);
-  setSelectedMediaPreviewUrl(previewUrl);
-  setSelectedMediaKind('video');
+  const video = document.createElement('video');
+  video.preload = 'metadata';
+
+  video.onloadedmetadata = () => {
+    window.URL.revokeObjectURL(video.src);
+
+    const duration = video.duration;
+
+    setSelectedMediaDuration(duration);
+    setSelectedMediaFile(file);
+    setSelectedMediaPreviewUrl(previewUrl);
+    setSelectedMediaKind('video');
+  };
+
+  video.src = previewUrl;
+
   return;
 }
 
@@ -761,7 +878,7 @@ export default function ChatPanel({
         emoji,
       })
       .select('id, message_id, profile_id, emoji, created_at')
-      .single();
+      .maybeSingle();
 
     if (error) {
       setReactionMap((prev) => ({ ...prev, [messageId]: original }));
@@ -958,26 +1075,33 @@ export default function ChatPanel({
   }, [messages, sparkEvents]);
 
   const handleSendAndRefocus = async () => {
-    if (selectedMediaFile && selectedMediaKind) {
-      await onSendMessage({
-        messageKind: selectedMediaKind,
-        mediaFile: selectedMediaFile,
-        mediaKind: selectedMediaKind,
-      });
-      clearSelectedMedia();
-    } else {
-      await onSendMessage();
-    }
+  if (sendLocked) return;
 
-    setTimeout(() => {
-      const el = textareaRef.current;
-      if (!el) return;
-      el.focus();
-      const len = el.value.length;
-      el.setSelectionRange(len, len);
-    }, 0);
-  };
+  setSendLocked(true);
 
+  if (selectedMediaFile && selectedMediaKind) {
+    await onSendMessage({
+      messageKind: selectedMediaKind,
+      mediaFile: selectedMediaFile,
+      mediaKind: selectedMediaKind,
+    });
+    clearSelectedMedia();
+  } else {
+    await onSendMessage();
+  }
+
+  setTimeout(() => {
+    setSendLocked(false);
+  }, 1200);
+
+  setTimeout(() => {
+    const el = textareaRef.current;
+    if (!el) return;
+    el.focus();
+    const len = el.value.length;
+    el.setSelectionRange(len, len);
+  }, 0);
+};
   if (!activeConversationId) {
     return (
       <div className="flex h-full items-center justify-center bg-neutral-50 px-6">
@@ -1243,7 +1367,46 @@ export default function ChatPanel({
             This chat is blocked. You can’t send messages here.
           </div>
         )}
+{!hasLanguageOverlap && (
+  <div className="border-b border-blue-200 bg-blue-50 px-3 py-2 text-xs text-blue-900">
+    You and this person may speak different languages.
+    <button
+      type="button"
+      className="ml-2 font-bold underline"
+      onClick={async () => {
+        if (!activeConversationId || !userId) return;
 
+        const newValue = !autoTranslate;
+
+        const { error } = await supabase
+          .from('conversation_translation_settings')
+          .upsert(
+            {
+              conversation_id: activeConversationId,
+              user_id: userId,
+              enabled: newValue,
+            },
+            {
+              onConflict: 'conversation_id,user_id',
+            }
+          );
+
+        if (error) {
+          alert(error.message);
+          return;
+        }
+
+        setAutoTranslate(newValue);
+      }}
+    >
+      {autoTranslate ? 'Turn OFF auto-translation' : 'Turn ON auto-translation'}
+    </button>
+
+    <span className="ml-2 font-semibold">
+      {autoTranslate ? 'ON' : 'OFF'}
+    </span>
+  </div>
+)}
         <div
           ref={scrollAreaRef}
           onScroll={() => {
@@ -1341,12 +1504,13 @@ export default function ChatPanel({
                     {!isMe && (
                       <div className="mb-1 text-[11px] font-semibold text-neutral-500">{label}</div>
                     )}
-
-                    {m.message_kind === 'text' && (
-                      <p className="whitespace-pre-wrap break-words text-[15px] leading-5">
-                        {m.content}
-                      </p>
-                    )}
+{(!m.message_kind || m.message_kind === 'text') && (
+  <p className="whitespace-pre-wrap break-words text-[15px] leading-5">
+    {autoTranslate && !hasLanguageOverlap && m.sender_id !== userId
+  ? (translatedMessages[m.id] || m.content)
+  : m.content}
+  </p>
+)}
 
                     {m.message_kind === 'image' && m.media_path && (
                       <div className="mt-1">
@@ -1454,11 +1618,11 @@ export default function ChatPanel({
                       </div>
                     )}
 
-                    {m.content && m.message_kind !== 'text' && (
-                      <p className="mt-2 whitespace-pre-wrap break-words text-[15px] leading-5">
-                        {m.content}
-                      </p>
-                    )}
+                    {m.content && m.message_kind && m.message_kind !== 'text' && (
+  <p className="mt-2 whitespace-pre-wrap break-words text-[15px] leading-5">
+    {m.content}
+  </p>
+)}
 
                     {groupedReactions.length > 0 && (
                       <div className="mt-2 flex flex-wrap gap-1">
@@ -1648,13 +1812,25 @@ export default function ChatPanel({
 
                 {selectedMediaFile &&
                   selectedMediaPreviewUrl &&
-                  selectedMediaKind === 'image' && (
+                  selectedMediaKind && (
                     <div className="mb-3 rounded-2xl border border-neutral-200 bg-white p-3 shadow-sm">
                       <div className="flex items-start justify-between gap-3">
                         <div>
                           <div className="text-sm font-semibold text-neutral-900">
-                            Image ready to send
+                            {selectedMediaKind === 'image'
+                              ? 'Image ready to send'
+                              : 'Video ready to send'}
                           </div>
+
+     {activeOther?.role !== 'host' &&
+  membershipTier &&
+  !['basic', 'plus', 'premium'].includes(
+    String(membershipTier).trim().toLowerCase()
+  ) && (
+    <div className="mt-1 text-xs font-semibold text-amber-600">
+      Photos & videos are a Premium feature → Upgrade to unlock
+    </div>
+  )}
                           <div className="text-xs text-neutral-500">
                             {selectedMediaFile.name}
                           </div>
@@ -1670,15 +1846,22 @@ export default function ChatPanel({
                       </div>
 
                       <div className="mt-3">
-                        <img
-                          src={selectedMediaPreviewUrl}
-                          alt="Preview"
-                          className="max-h-[220px] rounded-xl border border-neutral-200"
-                        />
+                        {selectedMediaKind === 'image' ? (
+                          <img
+                            src={selectedMediaPreviewUrl}
+                            alt="Preview"
+                            className="max-h-[220px] rounded-xl border border-neutral-200"
+                          />
+                        ) : (
+                          <video
+                            src={selectedMediaPreviewUrl}
+                            controls
+                            className="max-h-[220px] w-full rounded-xl border border-neutral-200 bg-black"
+                          />
+                        )}
                       </div>
                     </div>
                   )}
-
                 <div className="flex items-end gap-2">
                   <button
                     ref={emojiButtonRef}
@@ -1733,7 +1916,7 @@ export default function ChatPanel({
                   <button
                     type="button"
                     onClick={() => void handleSendAndRefocus()}
-                    disabled={sending || isBlockedWithActive}
+                    disabled={sending || isBlockedWithActive || sendLocked}
                     className="inline-flex h-11 shrink-0 items-center justify-center rounded-2xl bg-slate-900 px-4 text-sm font-semibold text-white transition hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-50"
                   >
                     {sending ? 'Sending…' : 'Send'}
