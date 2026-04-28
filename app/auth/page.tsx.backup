@@ -1,0 +1,236 @@
+'use client';
+
+import { useEffect, useState } from 'react';
+import { useRouter } from 'next/navigation';
+import { supabase } from '@/lib/supabaseClient';
+
+function validateUsername(u: string) {
+  const s = (u || '').trim();
+
+  if (s.length < 3 || s.length > 24) return 'Username must be 3–24 characters.';
+  if (s.includes('@')) return 'Username cannot contain @.';
+  if (s.includes(' ')) return 'Username cannot contain spaces.';
+  if (!/^[a-zA-Z0-9_]+$/.test(s)) return 'Only letters, numbers, and underscore are allowed.';
+
+  // Ban common email provider words (case-insensitive)
+  const banned = ['gmail', 'yahoo', 'hotmail', 'outlook', 'icloud', 'aol', 'proton', 'gmx'];
+  const lower = s.toLowerCase();
+  if (banned.some((w) => lower.includes(w))) return 'Username cannot contain email-provider words.';
+
+  return null;
+}
+
+export default function AuthPage() {
+  const router = useRouter();
+
+  const [mode, setMode] = useState<'login' | 'signup'>('login');
+
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+
+  // Username only required for signup
+  const [username, setUsername] = useState('');
+
+  const [busy, setBusy] = useState(false);
+
+  // If already logged in, go to messages
+  useEffect(() => {
+    (async () => {
+      const {
+        data: { user },
+      } = await supabase.auth.getUser();
+
+      if (user) router.push('/messages');
+    })();
+  }, [router]);
+
+  async function handleLogin() {
+    setBusy(true);
+
+    const { error } = await supabase.auth.signInWithPassword({
+      email: email.trim(),
+      password,
+    });
+
+    setBusy(false);
+
+    if (error) {
+      alert(error.message);
+      return;
+    }
+
+    router.push('/messages');
+  }
+
+  async function handleSignup() {
+    const cleanUsername = username.trim();
+    const err = validateUsername(cleanUsername);
+    if (err) {
+      alert(err);
+      return;
+    }
+
+    setBusy(true);
+
+    const { data, error } = await supabase.auth.signUp({
+      email: email.trim(),
+      password,
+      options: {
+        // ✅ This is the key: store username in auth metadata so your trigger can copy it into public.profiles
+        data: { username: cleanUsername },
+      },
+    });
+
+    setBusy(false);
+
+    if (error) {
+      alert(error.message);
+      return;
+    }
+
+    // If email confirmations are OFF, user may already be logged in:
+    const sessionUser = data?.user;
+    if (sessionUser) {
+      router.push('/messages');
+      return;
+    }
+
+    alert('Signup created. If email confirmation is enabled, check your email then log in.');
+    setMode('login');
+  }
+
+  return (
+    <main style={{ maxWidth: 520, margin: '0 auto', padding: 24 }}>
+      <h1 style={{ fontSize: 28, fontWeight: 900 }}>LoveF8</h1>
+
+      <div style={{ display: 'flex', gap: 8, marginTop: 12 }}>
+        <button
+          onClick={() => setMode('login')}
+          style={{
+            padding: '10px 12px',
+            borderRadius: 10,
+            border: '1px solid #ddd',
+            background: mode === 'login' ? '#f3f3f3' : 'white',
+            cursor: 'pointer',
+            fontWeight: 800,
+          }}
+        >
+          Login
+        </button>
+        <button
+          onClick={() => setMode('signup')}
+          style={{
+            padding: '10px 12px',
+            borderRadius: 10,
+            border: '1px solid #ddd',
+            background: mode === 'signup' ? '#f3f3f3' : 'white',
+            cursor: 'pointer',
+            fontWeight: 800,
+          }}
+        >
+          Sign up
+        </button>
+      </div>
+
+      <div style={{ marginTop: 16, border: '1px solid #ddd', borderRadius: 12, padding: 16 }}>
+        {mode === 'signup' && (
+          <>
+            <label style={{ display: 'block', fontSize: 12, fontWeight: 800, marginBottom: 6 }}>
+              Username (required)
+            </label>
+            <input
+              value={username}
+              onChange={(e) => setUsername(e.target.value)}
+              placeholder="example: tom_larson"
+              autoCapitalize="none"
+              autoCorrect="off"
+              spellCheck={false}
+              style={{
+                width: '100%',
+                padding: 10,
+                borderRadius: 10,
+                border: '1px solid #ddd',
+                marginBottom: 12,
+              }}
+            />
+            <div style={{ fontSize: 12, opacity: 0.7, marginBottom: 12 }}>
+              Allowed: letters, numbers, underscore. No spaces. No email/provider words.
+            </div>
+          </>
+        )}
+
+        <label style={{ display: 'block', fontSize: 12, fontWeight: 800, marginBottom: 6 }}>
+          Email
+        </label>
+        <input
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+          placeholder="you@example.com"
+          autoCapitalize="none"
+          autoCorrect="off"
+          spellCheck={false}
+          style={{
+            width: '100%',
+            padding: 10,
+            borderRadius: 10,
+            border: '1px solid #ddd',
+            marginBottom: 12,
+          }}
+        />
+
+        <label style={{ display: 'block', fontSize: 12, fontWeight: 800, marginBottom: 6 }}>
+          Password
+        </label>
+        <input
+          type="password"
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+          placeholder="••••••••"
+          style={{
+            width: '100%',
+            padding: 10,
+            borderRadius: 10,
+            border: '1px solid #ddd',
+            marginBottom: 12,
+          }}
+        />
+
+        {mode === 'login' ? (
+          <button
+            onClick={handleLogin}
+            disabled={busy}
+            style={{
+              width: '100%',
+              padding: '12px 14px',
+              borderRadius: 10,
+              border: 'none',
+              background: 'black',
+              color: 'white',
+              cursor: 'pointer',
+              fontWeight: 900,
+            }}
+          >
+            {busy ? '...' : 'Login'}
+          </button>
+        ) : (
+          <button
+            onClick={handleSignup}
+            disabled={busy}
+            style={{
+              width: '100%',
+              padding: '12px 14px',
+              borderRadius: 10,
+              border: 'none',
+              background: 'black',
+              color: 'white',
+              cursor: 'pointer',
+              fontWeight: 900,
+            }}
+          >
+            {busy ? '...' : 'Create account'}
+          </button>
+        )}
+      </div>
+    </main>
+  );
+}

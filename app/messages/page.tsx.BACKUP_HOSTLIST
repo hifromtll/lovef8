@@ -1,0 +1,355 @@
+
+'use client';
+
+import { useEffect, useMemo, useState } from 'react';
+import { useRouter } from 'next/navigation';
+import { supabase } from '@/lib/supabaseClient';
+
+type Conversation = {
+  id: string;
+  created_at: string;
+};
+
+type Message = {
+  id: string;
+  conversation_id: string;
+  sender_id: string;
+  content: string;
+  created_at: string;
+};
+
+type ParticipantRow = {
+  conversation_id: string;
+  profile_id: string;
+};
+
+type ProfileMini = {
+  id: string;
+  username: string | null;
+  host_mode: string | null;
+  role: string | null;
+  is_system_host: boolean | null;
+};
+
+export default function MessagesPage() {
+  const router = useRouter();
+
+  const [loading, setLoading] = useState(true);
+  const [userId, setUserId] = useState<string | null>(null);
+
+  const [conversations, setConversations] = useState<Conversation[]>([]);
+  const [activeConversationId, setActiveConversationId] = useState<string | null>(null);
+
+  const [messages, setMessages] = useState<Message[]>([]);
+  const [newMessage, setNewMessage] = useState('');
+  const [sending, setSending] = useState(false);
+
+  // conversationId -> other profile
+  const [labels, setLabels] = useState<Record<string, ProfileMini>>({});
+
+  // 1) Get user
+  useEffect(() => {
+    async function init() {
+      const {
+        data: { user },
+      } = await supabase.auth.getUser();
+
+      if (!user) {
+        router.push('/auth');
+        return;
+      }
+
+      setUserId(user.id);
+      setLoading(false);
+    }
+
+    init();
+  }, [router]);
+
+  // 2) Load conversations + build labels
+  useEffect(() => {
+    async function loadAll() {
+      if (!userId) return;
+
+      // a) find conversation ids for this user
+      const { data: myRows, error: myErr } = await supabase
+        .from('conversation_participants')
+        .select('conversation_id')
+        .eq('profile_id', userId);
+
+      if (myErr) {
+        console.error(myErr);
+        return;
+      }
+
+      const convoIds = (myRows || []).map((r: any) => r.conversation_id as string);
+
+      if (convoIds.length === 0) {
+        setConversations([]);
+        setActiveConversationId(null);
+        setLabels({});
+        return;
+      }
+
+      // b) load conversations
+      const { data: convoRows, error: convoErr } = await supabase
+        .from('conversations')
+        .select('id, created_at')
+        .in('id', convoIds)
+        .order('created_at', { ascending: false });
+
+      if (convoErr) {
+        console.error(convoErr);
+        return;
+      }
+
+      const convos = (convoRows as Conversation[]) || [];
+      setConversations(convos);
+      if (convos.length > 0) setActiveConversationId(convos[0].id);
+
+      // c) load ALL participants for these conversations
+      const { data: participantRows, error: pErr } = await supabase
+        .from('conversation_participants')
+        .select('conversation_id, profile_id')
+        .in('conversation_id', convoIds);
+
+      if (pErr) {
+        console.error(pErr);
+        return;
+      }
+
+      const participants = (participantRows as ParticipantRow[]) || [];
+
+      // d) map conversation -> other profile id (NOT me)
+      const convoToOther: Record<string, string> = {};
+      for (const row of participants) {
+        if (row.profile_id !== userId) {
+          convoToOther[row.conversation_id] = row.profile_id;
+        }
+      }
+
+      const otherIds = Array.from(new Set(Object.values(convoToOther)));
+
+      if (otherIds.length === 0) {
+        setLabels({});
+        return;
+      }
+
+      // e) load those "other" profiles
+      const { data: otherProfiles, error: profErr } = await supabase
+        .from('profiles')
+        .select('id, username, host_mode, role, is_system_host')
+        .in('id', otherIds);
+
+      if (profErr) {
+        console.error(profErr);
+        return;
+      }
+
+      const byId: Record<string, ProfileMini> = {};
+      (otherProfiles || []).forEach((p: any) => {
+        byId[p.id] = p as ProfileMini;
+      });
+
+      // f) labels: conversationId -> profile
+      const nextLabels: Record<string, ProfileMini> = {};
+      for (const [cid, oid] of Object.entries(convoToOther)) {
+        if (byId[oid]) nextLabels[cid] = byId[oid];
+      }
+      setLabels(nextLabels);
+    }
+
+    loadAll();
+  }, [userId]);
+
+  // 3) Load messages for active conversation
+  useEffect(() => {
+    async function loadMessages() {
+      if (!activeConversationId) return;
+
+      const { data, error } = await supabase
+        .from('messages')
+        .select('id, conversation_id, sender_id, content, created_at')
+        .eq('conversation_id', activeConversationId)
+        .order('created_at', { ascending: true });
+
+      if (error) console.error(error);
+
+      setMessages((data as Message[]) || []);
+    }
+
+    loadMessages();
+  }, [activeConversationId]);
+
+  async function sendMessage() {
+    if (!userId || !activeConversationId) return;
+    const text = newMessage.trim();
+    if (!text) return;
+
+    setSending(true);
+
+    const { error } = await supabase.from('messages').insert({
+      conversation_id: activeConversationId,
+      sender_id: userId,
+      content: text,
+    });
+
+    if (error) {
+      alert(error.message);
+      setSending(false);
+      return;
+    }
+
+    setNewMessage('');
+
+    const { data } = await supabase
+      .from('messages')
+      .select('id, conversation_id, sender_id, content, created_at')
+      .eq('conversation_id', activeConversationId)
+      .order('created_at', { ascending: true });
+
+    setMessages((data as Message[]) || []);
+    setSending(false);
+  }
+
+  const activeOther = useMemo(() => {
+    if (!activeConversationId) return null;
+    return labels[activeConversationId] || null;
+  }, [activeConversationId, labels]);
+
+  if (loading) return <div style={{ padding: 40 }}>Loading...</div>;
+
+  return (
+    <main style={{ padding: 24, maxWidth: 900, margin: '0 auto' }}>
+      <h1 style={{ fontSize: 28, fontWeight: 700 }}>LoveF8 Messages</h1>
+
+      <div style={{ display: 'grid', gridTemplateColumns: '280px 1fr', gap: 16, marginTop: 16 }}>
+        {/* Left */}
+        <div style={{ border: '1px solid #ddd', borderRadius: 12, padding: 12 }}>
+          <h2 style={{ fontSize: 16, marginBottom: 10 }}>Conversations</h2>
+
+          {conversations.length === 0 && <p>No conversations yet.</p>}
+
+          {conversations.map((c) => {
+            const other = labels[c.id];
+
+            const title =
+              other?.username && other.username.trim().length > 0
+                ? other.username
+                : other?.is_system_host
+                  ? 'LoveF8 Guide'
+                  : 'Host';
+
+            const subtitle =
+              other?.host_mode && other.host_mode.trim().length > 0
+                ? other.host_mode
+                : c.id.slice(0, 8) + '...';
+
+            return (
+              <button
+                key={c.id}
+                onClick={() => setActiveConversationId(c.id)}
+                style={{
+                  width: '100%',
+                  textAlign: 'left',
+                  padding: 10,
+                  borderRadius: 10,
+                  border: '1px solid #eee',
+                  background: c.id === activeConversationId ? '#f3f3f3' : 'white',
+                  cursor: 'pointer',
+                  marginBottom: 8,
+                }}
+              >
+                <div style={{ fontWeight: 800, fontSize: 14 }}>{title}</div>
+                <div style={{ fontSize: 12, opacity: 0.75 }}>{subtitle}</div>
+              </button>
+            );
+          })}
+        </div>
+
+        {/* Right */}
+        <div style={{ border: '1px solid #ddd', borderRadius: 12, padding: 12 }}>
+          <h2 style={{ fontSize: 16, marginBottom: 10 }}>
+            Chat{activeOther?.username ? ` — ${activeOther.username}` : ''}
+          </h2>
+
+          {!activeConversationId && <p>Select a conversation.</p>}
+
+          {activeConversationId && (
+            <>
+              <div
+                style={{
+                  height: 360,
+                  overflowY: 'auto',
+                  border: '1px solid #eee',
+                  borderRadius: 12,
+                  padding: 12,
+                  background: '#fafafa',
+                }}
+              >
+                {messages.map((m) => {
+                  const mine = m.sender_id === userId;
+                  return (
+                    <div
+                      key={m.id}
+                      style={{
+                        display: 'flex',
+                        justifyContent: mine ? 'flex-end' : 'flex-start',
+                        marginBottom: 10,
+                      }}
+                    >
+                      <div
+                        style={{
+                          maxWidth: '75%',
+                          padding: '10px 12px',
+                          borderRadius: 12,
+                          border: '1px solid #e5e5e5',
+                          background: 'white',
+                        }}
+                      >
+                        <div style={{ fontSize: 14 }}>{m.content}</div>
+                        <div style={{ fontSize: 11, opacity: 0.6, marginTop: 4 }}>
+                          {new Date(m.created_at).toLocaleString()}
+                        </div>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+
+              <div style={{ display: 'flex', gap: 8, marginTop: 12 }}>
+                <input
+                  value={newMessage}
+                  onChange={(e) => setNewMessage(e.target.value)}
+                  placeholder="Type a message…"
+                  style={{
+                    flex: 1,
+                    padding: 10,
+                    borderRadius: 10,
+                    border: '1px solid #ddd',
+                  }}
+                />
+                <button
+                  onClick={sendMessage}
+                  disabled={sending}
+                  style={{
+                    padding: '10px 14px',
+                    borderRadius: 10,
+                    border: 'none',
+                    background: 'black',
+                    color: 'white',
+                    cursor: 'pointer',
+                    fontWeight: 700,
+                  }}
+                >
+                  {sending ? '...' : 'Send'}
+                </button>
+              </div>
+            </>
+          )}
+        </div>
+      </div>
+    </main>
+  );
+}
+
