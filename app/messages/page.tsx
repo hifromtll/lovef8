@@ -2499,7 +2499,7 @@ console.log('LoveF8 spark check', {
 <button
   type="button"
   onClick={() => router.push('/support/report')}
-  className="rounded-xl border border-red-200 bg-red-50 px-4 py-2 text-sm font-bold text-red-900 shadow-sm transition hover:bg-red-100"
+  className="flex items-center rounded-xl border border-red-200 bg-red-50 px-4 py-2 text-sm font-medium text-red-900 shadow-sm transition hover:bg-red-100 whitespace-nowrap"
 >
   {trSafe('Report Issue')}
 </button>
