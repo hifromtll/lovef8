@@ -2224,7 +2224,7 @@ setLoading(false);
   }
 
   return (
-    <main className="relative h-[100dvh] bg-[radial-gradient(circle_at_top_left,rgba(255,83,164,0.20),transparent_30%),radial-gradient(circle_at_top_right,rgba(59,130,246,0.14),transparent_28%),linear-gradient(180deg,#fff7fc_0%,#fff_40%,#f6f4ff_100%)] text-neutral-900">
+    <main className="relative min-h-[100dvh] bg-[radial-gradient(circle_at_top_left,rgba(255,83,164,0.20),transparent_30%),radial-gradient(circle_at_top_right,rgba(59,130,246,0.14),transparent_28%),linear-gradient(180deg,#fff7fc_0%,#fff_40%,#f6f4ff_100%)] text-neutral-900">
       <div
         className="pointer-events-none absolute inset-0 opacity-[0.06]"
         style={{
