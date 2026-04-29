@@ -1840,13 +1840,13 @@ useEffect(() => {
                           <img
                             src={selectedMediaPreviewUrl}
                             alt="Preview"
-                            className="max-h-[220px] rounded-xl border border-neutral-200"
+                            className="h-24 w-24 rounded-xl border border-neutral-200 object-cover sm:h-32 sm:w-32"
                           />
                         ) : (
                           <video
                             src={selectedMediaPreviewUrl}
                             controls
-                            className="max-h-[220px] w-full rounded-xl border border-neutral-200 bg-black"
+                            className="h-24 w-24 rounded-xl border border-neutral-200 bg-black object-cover sm:h-32 sm:w-32"
                           />
                         )}
                       </div>
@@ -1865,15 +1865,25 @@ useEffect(() => {
                   </button>
 
                   <button
-                    type="button"
-                    onClick={() => fileInputRef.current?.click()}
-                    disabled={isBlockedWithActive || sending}
-                    className="inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl border border-neutral-300 bg-white text-xl transition hover:bg-neutral-50 disabled:cursor-not-allowed disabled:opacity-50"
-                    aria-label="Choose image"
-                    title="Choose image"
-                  >
-                    🖼️
-                  </button>
+  type="button"
+  onClick={() => {
+    const tier = String(membershipTier || '').toLowerCase().trim();
+
+    if (!['basic', 'plus', 'premium'].includes(tier)) {
+      alert('Photos & videos are a Premium feature. Please upgrade to send media.');
+      return;
+    }
+
+    fileInputRef.current?.click();
+  }}
+  disabled={isBlockedWithActive || sending}
+  className="inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl border border-neutral-300 bg-white text-xl transition hover:bg-neutral-50 disabled:cursor-not-allowed disabled:opacity-50"
+  aria-label="Choose image"
+  title="Choose image"
+>
+  🖼️
+</button>
+                    
 
                   <input
                     ref={fileInputRef}
