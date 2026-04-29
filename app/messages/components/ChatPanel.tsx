@@ -1299,8 +1299,8 @@ useEffect(() => {
               </div>
 
                             {activeOther && (
-                <div className="flex shrink-0 flex-col items-end gap-1">
-                  <div className="flex flex-wrap justify-end gap-2">
+                <div className="flex min-w-0 shrink items-end gap-1 overflow-hidden">
+                  <div className="flex shrink gap-1 overflow-hidden">
                     <button
                       type="button"
                       onClick={() => {
