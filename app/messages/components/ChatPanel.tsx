@@ -1229,7 +1229,7 @@ useEffect(() => {
         >
           <div className="mx-auto w-full max-w-3xl">
             <div className="flex items-start justify-between gap-3">
-              <div className="flex min-w-0 items-center gap-2">
+              <div className="flex min-w-0 flex-1 items-center gap-2">
                 {!isDesktop && (
                   <button
                     type="button"
