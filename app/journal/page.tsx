@@ -6,7 +6,7 @@ import { useRouter, useSearchParams } from 'next/navigation';
 import { supabase } from '@/lib/supabaseClient';
 import JournalMemoryCard from './components/JournalMemoryCard';
 import JournalMediaGrid from './components/JournalMediaGrid';
-import MediaLightbox from './components/MediaLIghtbox';
+import MediaLightbox from './components/MediaLIghtbox.tsx';
 
 type JournalSliceMessage = {
   id: string;
