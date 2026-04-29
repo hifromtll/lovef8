@@ -162,14 +162,6 @@ function getModeMatchText(myMode: ChatMode | null, otherMode: ChatMode | null) {
 
   if (myMode === otherMode) {
     switch (myMode) {
-      case 'chatty':
-        return "You're both in Chatty mode";
-      case 'flirty':
-        return "You're both in Flirty mode";
-      case 'romantic':
-        return "You're both in Romantic mode";
-      case 'open_all':
-        return "You're both open to all";
       default:
         return null;
     }
