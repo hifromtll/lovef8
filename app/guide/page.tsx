@@ -744,13 +744,13 @@ setTargetLanguage(profileLanguages[0] || 'English');
     <main className="fixed inset-0 bg-gradient-to-br from-white via-red-50 to-yellow-50">
       <div className="h-full w-full p-3 sm:p-4">
         <div className="mx-auto grid h-full max-w-[1400px] grid-rows-[auto_minmax(0,1fr)] gap-3">
-          <div className="rounded-3xl border border-neutral-200 bg-white px-5 py-4 shadow-sm">
+          <div className="rounded-2xl border border-neutral-200 bg-white px-4 py-3 shadow-sm">
             <div className="flex items-start justify-between gap-4">
               <div>
-                <div className="text-2xl font-black tracking-tight text-neutral-900">
+                <div className="text-lg font-black text-neutral-900">
                   {pageTitle}
                 </div>
-                <div className="mt-1 text-sm text-neutral-600">{pageSubtitle}</div>
+                <div className="mt-1 text-xs text-neutral-500">{pageSubtitle}</div>
               </div>
 
               <div className="flex flex-wrap gap-2">
