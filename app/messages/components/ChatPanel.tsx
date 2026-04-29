@@ -373,7 +373,7 @@ function SparkEventCard({
         {kind === 'super' ? '✴' : '⚡'}
       </div>
 
-      <div className="min-w-0.5">
+      <div className="min-w-0">
         <div className="truncate text-sm font-bold">{label}</div>
         <div className="truncate text-xs opacity-80">{subLabel}</div>
       </div>
@@ -1225,11 +1225,11 @@ useEffect(() => {
         `}</style>
 
         <div
-          className={`sticky top-0 z-10 border-b border-neutral-200/80 px-3 py-1.5 backdrop-blur transition-colors ${headerGlowClass}`}
+          className={`sticky top-0 z-10 border-b border-neutral-200/80 px-3 py-2.0 backdrop-blur transition-colors ${headerGlowClass}`}
         >
           <div className="mx-auto w-full max-w-3xl">
             <div className="flex items-start justify-between gap-3">
-              <div className="flex min-w-0 items-center gap-2">
+              <div className="flex min-w-0 items-center gap-2.5">
                 {!isDesktop && (
                   <button
                     type="button"
@@ -1242,21 +1242,19 @@ useEffect(() => {
                 )}
 
                 <button
-  type="button"
-  disabled={!headerPreviewProfile}
-  onClick={() => {
-    if (headerPreviewProfile) onOpenProfilePreview(headerPreviewProfile);
-  }}
-  className="rounded-full disabled:cursor-default"
->
-  <div className="scale-90">
-    <HeaderAvatar
-      name={chatTitle}
-      avatarUrl={activeOther?.avatar_url}
-      online={activeOtherOnline}
-    />
-  </div>
-</button>
+                  type="button"
+                  disabled={!headerPreviewProfile}
+                  onClick={() => {
+                    if (headerPreviewProfile) onOpenProfilePreview(headerPreviewProfile);
+                  }}
+                  className="rounded-full disabled:cursor-default"
+                >
+                  <HeaderAvatar
+                    name={chatTitle}
+                    avatarUrl={activeOther?.avatar_url}
+                    online={activeOtherOnline}
+                  />
+                </button>
 
                 <button
                   type="button"
@@ -1267,7 +1265,7 @@ useEffect(() => {
                   className="min-w-0 text-left transition hover:opacity-80 disabled:cursor-default"
                 >
                   <div className="min-w-0">
-                    <div className="flex flex-wrap items-center gap-1.5">
+                    <div className="flex flex-wrap items-center gap-2">
                       <div className="truncate text-[11px] font-bold text-neutral-950">
                         {chatTitle}
                       </div>
