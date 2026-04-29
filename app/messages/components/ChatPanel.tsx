@@ -1266,7 +1266,7 @@ useEffect(() => {
                 >
                   <div className="min-w-0">
                     <div className="flex flex-wrap items-center gap-2">
-                      <div className="truncate text-[13px] font-bold text-neutral-950">
+                      <div className="truncate text-[11px] font-bold text-neutral-950">
                         {chatTitle}
                       </div>
 
@@ -1291,9 +1291,7 @@ useEffect(() => {
                       </div>
                     )}
 
-                    {modeMatchText && (
-                      <div className="truncate text-[11px] text-neutral-500">{modeMatchText}</div>
-                    )}
+                
                   </div>
                 </button>
               </div>
