@@ -323,7 +323,7 @@ const logAppEvent = useCallback(
     return {
       tone: 'red' as const,
       title: 'You’re almost out of Sparks ⚡',
-      body: 'Upgrade your membership to keep the conversation going.',
+      body: 'Upgrade for more Sparks.',
     };
   }
 
