@@ -1242,22 +1242,21 @@ useEffect(() => {
                 )}
 
                 <button
-                  type="button"
-                  disabled={!headerPreviewProfile}
-                  onClick={() => {
-                    if (headerPreviewProfile) onOpenProfilePreview(headerPreviewProfile);
-                  }}
-                  className="rounded-full disabled:cursor-default"
-                >
-                  <div className="scale-90">
+  type="button"
+  disabled={!headerPreviewProfile}
+  onClick={() => {
+    if (headerPreviewProfile) onOpenProfilePreview(headerPreviewProfile);
+  }}
+  className="rounded-full disabled:cursor-default"
+>
   <div className="scale-90">
-  <HeaderAvatar
-    name={chatTitle}
-    avatarUrl={activeOther?.avatar_url}
-    online={activeOtherOnline}
-  />
-</div>
-                </button>
+    <HeaderAvatar
+      name={chatTitle}
+      avatarUrl={activeOther?.avatar_url}
+      online={activeOtherOnline}
+    />
+  </div>
+</button>
 
                 <button
                   type="button"
