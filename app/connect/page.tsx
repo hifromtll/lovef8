@@ -1347,13 +1347,10 @@ setHostsLoading(false);
 
       const convoId = data as string;
 
-      setPendingAnchorMessageId(null);
-      await unhideConversation(convoId);
-      await loadConversationsAndLabels(userId);
-      await openConversation(convoId);
-      await loadMessages(convoId);
-      await loadSparkEvents(convoId);
-      scrollChatToBottom();
+setPendingAnchorMessageId(null);
+await unhideConversation(convoId);
+
+router.push(`/messages?conversationId=${convoId}`);
     },
     [
       blockedOtherIds,
