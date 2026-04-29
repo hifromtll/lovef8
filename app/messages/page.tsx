@@ -1,6 +1,6 @@
 'use client';
 
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { Suspense, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { supabase } from '@/lib/supabaseClient';
 import { touchLastLogin } from '@/lib/touchLastLogin';
@@ -214,6 +214,14 @@ function writeSettingsTranslationCache(cacheKey: string, map: Record<string, str
 }
 
 export default function MessagesPage() {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <MessagesPageContent />
+    </Suspense>
+  );
+}
+
+function MessagesPageContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
 
