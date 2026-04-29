@@ -373,7 +373,7 @@ function SparkEventCard({
         {kind === 'super' ? '✴' : '⚡'}
       </div>
 
-      <div className="min-w-0">
+      <div className="min-w-0.5">
         <div className="truncate text-sm font-bold">{label}</div>
         <div className="truncate text-xs opacity-80">{subLabel}</div>
       </div>
@@ -1225,11 +1225,11 @@ useEffect(() => {
         `}</style>
 
         <div
-          className={`sticky top-0 z-10 border-b border-neutral-200/80 px-3 py-2.0 backdrop-blur transition-colors ${headerGlowClass}`}
+          className={`sticky top-0 z-10 border-b border-neutral-200/80 px-3 py-1.5 backdrop-blur transition-colors ${headerGlowClass}`}
         >
           <div className="mx-auto w-full max-w-3xl">
             <div className="flex items-start justify-between gap-3">
-              <div className="flex min-w-0 items-center gap-2.5">
+              <div className="flex min-w-0 items-center gap-2">
                 {!isDesktop && (
                   <button
                     type="button"
@@ -1249,11 +1249,14 @@ useEffect(() => {
                   }}
                   className="rounded-full disabled:cursor-default"
                 >
-                  <HeaderAvatar
-                    name={chatTitle}
-                    avatarUrl={activeOther?.avatar_url}
-                    online={activeOtherOnline}
-                  />
+                  <div className="scale-90">
+  <div className="scale-90">
+  <HeaderAvatar
+    name={chatTitle}
+    avatarUrl={activeOther?.avatar_url}
+    online={activeOtherOnline}
+  />
+</div>
                 </button>
 
                 <button
@@ -1265,7 +1268,7 @@ useEffect(() => {
                   className="min-w-0 text-left transition hover:opacity-80 disabled:cursor-default"
                 >
                   <div className="min-w-0">
-                    <div className="flex flex-wrap items-center gap-2">
+                    <div className="flex flex-wrap items-center gap-1.5">
                       <div className="truncate text-[11px] font-bold text-neutral-950">
                         {chatTitle}
                       </div>
@@ -1296,59 +1299,64 @@ useEffect(() => {
                 </button>
               </div>
 
-              {activeOther && (
-                <div className="flex shrink-0 items-center gap-2">
-                  <button
-                    type="button"
-                    onClick={() => {
-                      window.location.href = `/journal?conversationId=${activeConversationId}`;
-                    }}
-                    className="rounded-xl border border-neutral-300 bg-white px-3 py-2 text-xs font-semibold text-neutral-800 transition hover:bg-neutral-50"
-                  >
-                    Journal
-                  </button>
+                            {activeOther && (
+                <div className="flex shrink-0 flex-col items-end gap-1">
+                  <div className="flex items-center gap-2">
+                    <button
+                      type="button"
+                      onClick={() => {
+                        window.location.href = `/journal?conversationId=${activeConversationId}`;
+                      }}
+                      className="rounded-xl border border-neutral-300 bg-white px-3 py-2 text-xs font-semibold text-neutral-800 transition hover:bg-neutral-50"
+                    >
+                      Journal
+                    </button>
 
-                  {activeOther.is_system_host === true ? (
-                    <span className="hidden rounded-xl border border-neutral-200 bg-white px-3 py-2 text-xs font-semibold text-neutral-500 sm:inline-flex">
-                      Protected
-                    </span>
-                  ) : isBlockedWithActive ? (
-                    <button
-                      type="button"
-                      onClick={() => void onUnblock()}
-                      className="rounded-xl border border-neutral-300 bg-white px-3 py-2 text-xs font-semibold text-neutral-800 transition hover:bg-neutral-50"
-                    >
-                      Unblock
-                    </button>
-                  ) : (
-                    <button
-                      type="button"
-                      onClick={() => void onBlock()}
-                      className="rounded-xl border border-neutral-300 bg-white px-3 py-2 text-xs font-semibold text-neutral-800 transition hover:bg-neutral-50"
-                    >
-                      Block
-                    </button>
+                    {activeOther.is_system_host === true ? (
+                      <span className="hidden rounded-xl border border-neutral-200 bg-white px-3 py-2 text-xs font-semibold text-neutral-500 sm:inline-flex">
+                        Protected
+                      </span>
+                    ) : isBlockedWithActive ? (
+                      <button
+                        type="button"
+                        onClick={() => void onUnblock()}
+                        className="rounded-xl border border-neutral-300 bg-white px-3 py-2 text-xs font-semibold text-neutral-800 transition hover:bg-neutral-50"
+                      >
+                        Unblock
+                      </button>
+                    ) : (
+                      <button
+                        type="button"
+                        onClick={() => void onBlock()}
+                        className="rounded-xl border border-neutral-300 bg-white px-3 py-2 text-xs font-semibold text-neutral-800 transition hover:bg-neutral-50"
+                      >
+                        Block
+                      </button>
+                    )}
+                  </div>
+
+                  {canReceiveSparks && (
+                    <div className="w-full">
+                      <ChatHeaderActions
+                        otherProfile={{
+                          display_name: chatTitle,
+                          username: activeOther?.username ?? null,
+                        }}
+                        sendingSpark={sendingSpark}
+                        onSendSpark={onSendSpark}
+                      />
+                    </div>
                   )}
                 </div>
               )}
-            </div>
+
+              </div>
 
             {activeOther?.is_system_host === true && (
               <div className="mt-2 text-xs font-medium text-neutral-500 sm:hidden">Protected</div>
             )}
 
-            {canReceiveSparks && (
-              <div className="mt-1.5">
-                <ChatHeaderActions
-                  otherProfile={{
-                    display_name: chatTitle,
-                    username: activeOther?.username ?? null,
-                  }}
-                  sendingSpark={sendingSpark}
-                  onSendSpark={onSendSpark}
-                />
-              </div>
-            )}
+           
           </div>
         </div>
 
@@ -1799,177 +1807,173 @@ useEffect(() => {
                       : `You've reached your daily limit with ${activeOther.username}`}
                   </div>
                 )}
+{selectedMediaFile && selectedMediaPreviewUrl && selectedMediaKind && (
+  <div className="mb-3 rounded-2xl border border-neutral-200 bg-white p-3 shadow-sm">
+    <div className="flex items-start justify-between gap-3">
+      <div>
+        <div className="text-sm font-semibold text-neutral-900">
+          {selectedMediaKind === 'image' ? 'Image ready to send' : 'Video ready to send'}
+        </div>
 
-                {selectedMediaFile &&
-                  selectedMediaPreviewUrl &&
-                  selectedMediaKind && (
-                    <div className="mb-3 rounded-2xl border border-neutral-200 bg-white p-3 shadow-sm">
-                      <div className="flex items-start justify-between gap-3">
-                        <div>
-                          <div className="text-sm font-semibold text-neutral-900">
-                            {selectedMediaKind === 'image'
-                              ? 'Image ready to send'
-                              : 'Video ready to send'}
-                          </div>
+        <div className="text-xs text-neutral-500">
+          {selectedMediaFile.name}
+        </div>
+      </div>
 
-     {activeOther?.role !== 'host' &&
-  membershipTier &&
-  !['basic', 'plus', 'premium'].includes(
-    String(membershipTier).trim().toLowerCase()
-  ) && (
-    <div className="mt-1 text-xs font-semibold text-amber-600">
-      Photos & videos are a Premium feature → Upgrade to unlock
+      <button
+        type="button"
+        onClick={clearSelectedMedia}
+        className="rounded-xl border border-neutral-300 bg-white px-3 py-1.5 text-xs font-semibold text-neutral-700 transition hover:bg-neutral-50"
+      >
+        Remove
+      </button>
     </div>
-  )}
-                          <div className="text-xs text-neutral-500">
-                            {selectedMediaFile.name}
-                          </div>
-                        </div>
 
-                        <button
-                          type="button"
-                          onClick={clearSelectedMedia}
-                          className="rounded-xl border border-neutral-300 bg-white px-3 py-1.5 text-xs font-semibold text-neutral-700 transition hover:bg-neutral-50"
-                        >
-                          Remove
-                        </button>
-                      </div>
+    <div className="mt-3">
+      {selectedMediaKind === 'image' ? (
+        <img
+          src={selectedMediaPreviewUrl}
+          alt="Preview"
+          className="h-24 w-24 rounded-xl border border-neutral-200 object-cover sm:h-32 sm:w-32"
+        />
+      ) : (
+        <video
+          src={selectedMediaPreviewUrl}
+          controls
+          className="h-24 w-24 rounded-xl border border-neutral-200 bg-black object-cover sm:h-32 sm:w-32"
+        />
+      )}
+    </div>
+  </div>
+)}
 
-                      <div className="mt-3">
-                        {selectedMediaKind === 'image' ? (
-                          <img
-                            src={selectedMediaPreviewUrl}
-                            alt="Preview"
-                            className="h-24 w-24 rounded-xl border border-neutral-200 object-cover sm:h-32 sm:w-32"
-                          />
-                        ) : (
-                          <video
-                            src={selectedMediaPreviewUrl}
-                            controls
-                            className="h-24 w-24 rounded-xl border border-neutral-200 bg-black object-cover sm:h-32 sm:w-32"
-                          />
-                        )}
-                      </div>
-                    </div>
-                  )}
-                <div className="flex items-end gap-2">
-                  <button
-                    ref={emojiButtonRef}
-                    type="button"
-                    onClick={() => setEmojiOpen((prev) => !prev)}
-                    disabled={isBlockedWithActive || sending}
-                    className="inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl border border-neutral-300 bg-white text-xl transition hover:bg-neutral-50 disabled:cursor-not-allowed disabled:opacity-50"
-                    aria-label="Open emoji picker"
-                  >
-                    😊
-                  </button>
+<div className="flex items-end gap-2">
+  <button
+    ref={emojiButtonRef}
+    type="button"
+    onClick={() => setEmojiOpen((prev) => !prev)}
+    disabled={isBlockedWithActive || sending}
+    className="inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl border border-neutral-300 bg-white text-xl transition hover:bg-neutral-50 disabled:cursor-not-allowed disabled:opacity-50"
+    aria-label="Open emoji picker"
+  >
+    😊
+  </button>
 
-                  <button
-  type="button"
-  onClick={() => {
-    const tier = String(membershipTier || '').toLowerCase().trim();
-
-    if (!['basic', 'plus', 'premium'].includes(tier)) {
-      alert('Photos & videos are a Premium feature. Please upgrade to send media.');
-      return;
+  <button
+    type="button"
+    onClick={() => fileInputRef.current?.click()}
+    disabled={
+      isBlockedWithActive ||
+      sending ||
+      !['basic', 'plus', 'premium'].includes(
+        String(membershipTier || '').toLowerCase().trim()
+      )
     }
+    className={`inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl border text-xl transition ${
+      ['basic', 'plus', 'premium'].includes(
+        String(membershipTier || '').toLowerCase().trim()
+      )
+        ? 'border-neutral-300 bg-white hover:bg-neutral-50'
+        : 'cursor-not-allowed border-neutral-200 bg-neutral-100 text-neutral-400'
+    } disabled:opacity-50`}
+    aria-label="Choose image"
+    title={
+      ['basic', 'plus', 'premium'].includes(
+        String(membershipTier || '').toLowerCase().trim()
+      )
+        ? 'Choose image'
+        : 'Upgrade to send photos & videos'
+    }
+  >
+    🖼️
+  </button>
 
-    fileInputRef.current?.click();
-  }}
-  disabled={isBlockedWithActive || sending}
-  className="inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl border border-neutral-300 bg-white text-xl transition hover:bg-neutral-50 disabled:cursor-not-allowed disabled:opacity-50"
-  aria-label="Choose image"
-  title="Choose image"
->
-  🖼️
-</button>
-                    
+  <input
+    ref={fileInputRef}
+    type="file"
+    accept="image/*,video/*"
+    onChange={handlePickMedia}
+    className="hidden"
+  />
 
-                  <input
-                    ref={fileInputRef}
-                    type="file"
-                    accept="image/*,video/*"
-                    onChange={handlePickMedia}
-                    className="hidden"
-                  />
+  <textarea
+    ref={textareaRef}
+    value={newMessage}
+    onChange={(e) => void onChangeNewMessage(e.target.value)}
+    placeholder={isBlockedWithActive ? 'Blocked' : 'Type a message…'}
+    disabled={isBlockedWithActive || sending}
+    rows={1}
+    className="min-h-[46px] max-h-[180px] flex-1 resize-none rounded-2xl border border-neutral-300 bg-white px-4 py-3 text-[15px] leading-5 outline-none transition focus:border-sky-400 focus:ring-2 focus:ring-sky-100 disabled:bg-neutral-100"
+    onKeyDown={(e) => {
+      if (e.key === 'Escape') {
+        setEmojiOpen(false);
+        setReactingTo(null);
+      }
 
-                  <textarea
-                    ref={textareaRef}
-                    value={newMessage}
-                    onChange={(e) => void onChangeNewMessage(e.target.value)}
-                    placeholder={isBlockedWithActive ? 'Blocked' : 'Type a message…'}
-                    disabled={isBlockedWithActive || sending}
-                    rows={1}
-                    className="min-h-[46px] max-h-[180px] flex-1 resize-none rounded-2xl border border-neutral-300 bg-white px-4 py-3 text-[15px] leading-5 outline-none transition focus:border-sky-400 focus:ring-2 focus:ring-sky-100 disabled:bg-neutral-100"
-                    onKeyDown={(e) => {
-                      if (e.key === 'Escape') {
-                        setEmojiOpen(false);
-                        setReactingTo(null);
-                      }
-                      if (e.key === 'Enter' && !e.shiftKey) {
-                        e.preventDefault();
-                        void handleSendAndRefocus();
-                      }
-                    }}
-                  />
+      if (e.key === 'Enter' && !e.shiftKey) {
+        e.preventDefault();
+        void handleSendAndRefocus();
+      }
+    }}
+  />
 
-                  <button
-                    type="button"
-                    onClick={() => void handleSendAndRefocus()}
-                    disabled={sending || isBlockedWithActive || sendLocked}
-                    className="inline-flex h-11 shrink-0 items-center justify-center rounded-2xl bg-slate-900 px-4 text-sm font-semibold text-white transition hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-50"
-                  >
-                    {sending ? 'Sending…' : 'Send'}
-                  </button>
-                </div>
+  <button
+    type="button"
+    onClick={() => void handleSendAndRefocus()}
+    disabled={sending || isBlockedWithActive || sendLocked}
+    className="inline-flex h-11 shrink-0 items-center justify-center rounded-2xl bg-slate-900 px-4 text-sm font-semibold text-white transition hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-50"
+  >
+    {sending ? 'Sending…' : 'Send'}
+  </button>
+</div>
 
-                {emojiOpen && !isBlockedWithActive && (
-                  <div
-                    ref={emojiPanelRef}
-                    className="absolute bottom-[calc(100%+10px)] left-0 z-30 w-full max-w-[520px] rounded-3xl border border-neutral-200 bg-white p-4 shadow-2xl"
-                  >
-                    <div className="mb-3 flex items-center justify-between gap-3">
-                      <div>
-                        <div className="text-sm font-bold text-neutral-900">Add emoji</div>
-                        <div className="text-xs text-neutral-500">
-                          LoveF8 spark vibes included. These are not paid Sparks.
-                        </div>
-                      </div>
+{emojiOpen && !isBlockedWithActive && (
+  <div
+    ref={emojiPanelRef}
+    className="absolute bottom-[calc(100%+10px)] left-0 z-30 w-full max-w-[520px] rounded-3xl border border-neutral-200 bg-white p-4 shadow-2xl"
+  >
+    <div className="mb-3 flex items-center justify-between gap-3">
+      <div>
+        <div className="text-sm font-bold text-neutral-900">Add emoji</div>
+        <div className="text-xs text-neutral-500">
+          LoveF8 spark vibes included. These are not paid Sparks.
+        </div>
+      </div>
 
-                      <button
-                        type="button"
-                        onClick={() => setEmojiOpen(false)}
-                        className="rounded-full px-2 py-1 text-xs font-semibold text-neutral-500 transition hover:bg-neutral-100 hover:text-neutral-900"
-                      >
-                        Close
-                      </button>
-                    </div>
+      <button
+        type="button"
+        onClick={() => setEmojiOpen(false)}
+        className="rounded-full px-2 py-1 text-xs font-semibold text-neutral-500 transition hover:bg-neutral-100 hover:text-neutral-900"
+      >
+        Close
+      </button>
+    </div>
 
-                    <div className="max-h-[320px] space-y-4 overflow-y-auto pr-1">
-                      {COMPOSER_EMOJI_GROUPS.map((group) => (
-                        <div key={group.title}>
-                          <div className="mb-2 text-xs font-bold uppercase tracking-wide text-neutral-500">
-                            {group.title}
-                          </div>
+    <div className="max-h-[320px] space-y-4 overflow-y-auto pr-1">
+      {COMPOSER_EMOJI_GROUPS.map((group) => (
+        <div key={group.title}>
+          <div className="mb-2 text-xs font-bold uppercase tracking-wide text-neutral-500">
+            {group.title}
+          </div>
 
-                          <div className="grid grid-cols-6 gap-2 sm:grid-cols-8">
-                            {group.emojis.map((emoji) => (
-                              <button
-                                key={`${group.title}-${emoji}`}
-                                type="button"
-                                onClick={() => void appendEmoji(emoji)}
-                                className="inline-flex h-11 items-center justify-center rounded-2xl border border-neutral-200 bg-white text-xl transition hover:bg-neutral-50"
-                                aria-label={`Insert ${emoji}`}
-                              >
-                                {emoji}
-                              </button>
-                            ))}
-                          </div>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                )}
+          <div className="grid grid-cols-6 gap-2 sm:grid-cols-8">
+            {group.emojis.map((emoji) => (
+              <button
+                key={`${group.title}-${emoji}`}
+                type="button"
+                onClick={() => void appendEmoji(emoji)}
+                className="inline-flex h-11 items-center justify-center rounded-2xl border border-neutral-200 bg-white text-xl transition hover:bg-neutral-50"
+                aria-label={`Insert ${emoji}`}
+              >
+                {emoji}
+              </button>
+            ))}
+          </div>
+        </div>
+      ))}
+    </div>
+  </div>
+)}
               </div>
             </div>
 
