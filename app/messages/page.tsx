@@ -1208,9 +1208,13 @@ const hasLanguageOverlap = sharedLanguages.length > 0;
     for (const conversation of conversations) {
       if (hiddenConversationIds.has(conversation.id)) continue;
 
-      const other = labels[conversation.id];
-      const otherKey = other?.id || `unknown:${conversation.id}`;
-      const currentBest = bestByOther[otherKey];
+     const other = labels[conversation.id];
+
+if (!other) continue;
+if (other.role === 'admin') continue;
+
+const otherKey = other.id;
+const currentBest = bestByOther[otherKey];
 
       if (!currentBest) {
         bestByOther[otherKey] = conversation;
