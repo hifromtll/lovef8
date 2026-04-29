@@ -370,6 +370,7 @@ const [translatedTopNavMap, setTranslatedTopNavMap] = useState<Record<string, st
 const [forceEnglish, setForceEnglish] = useState(false);
 const trSafe = (text: string) => (forceEnglish ? text : translatedTopNavMap[text] || text);
 
+const [filtersOpen, setFiltersOpen] = useState(false);
   const [countryFilter, setCountryFilter] = useState('');
   const [minAge, setMinAge] = useState('19');
   const [maxAge, setMaxAge] = useState('');
@@ -2223,7 +2224,7 @@ setLoading(false);
   }
 
   return (
-    <main className="relative h-[100dvh] overflow-hidden bg-[radial-gradient(circle_at_top_left,rgba(255,83,164,0.20),transparent_30%),radial-gradient(circle_at_top_right,rgba(59,130,246,0.14),transparent_28%),linear-gradient(180deg,#fff7fc_0%,#fff_40%,#f6f4ff_100%)] text-neutral-900">
+    <main className="relative h-[100dvh] bg-[radial-gradient(circle_at_top_left,rgba(255,83,164,0.20),transparent_30%),radial-gradient(circle_at_top_right,rgba(59,130,246,0.14),transparent_28%),linear-gradient(180deg,#fff7fc_0%,#fff_40%,#f6f4ff_100%)] text-neutral-900">
       <div
         className="pointer-events-none absolute inset-0 opacity-[0.06]"
         style={{
@@ -2238,7 +2239,7 @@ setLoading(false);
       <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(180deg,rgba(255,255,255,0.10)_0%,rgba(255,255,255,0.42)_18%,rgba(255,255,255,0.88)_100%)]" />
 
       <div className="relative mx-auto flex h-full w-full max-w-7xl flex-col lg:px-4 lg:py-4">
-        <div className="sticky top-0 z-30 shrink-0 border-b border-fuchsia-100/80 bg-white/80 px-3 py-3 backdrop-blur-xl lg:static lg:rounded-t-[28px] lg:border lg:border-b-0 lg:bg-white/80 lg:px-4 lg:py-4">
+        <div className="z-30 shrink-0 border-b border-fuchsia-100/80 bg-white/80 px-3 py-3 backdrop-blur-xl lg:static lg:rounded-t-[28px] lg:border lg:border-b-0 lg:bg-white/80 lg:px-4 lg:py-4">
           <div className="flex flex-col gap-3">
             <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
               <div className="min-w-0">
@@ -2341,11 +2342,18 @@ setLoading(false);
 <div className="rounded-[22px] border border-fuchsia-100/80 bg-white/70 p-2.5 shadow-[0_14px_36px_rgba(83,34,115,0.06)] backdrop-blur sm:p-3">
 
   <div className="mb-2 flex items-center justify-between gap-3">
-    <div className="text-sm font-black tracking-tight text-neutral-950">
-      {trSafe('Filters')}
-    </div>
+  <div className="text-sm font-black tracking-tight text-neutral-950">
+    {trSafe('Filters')}
+  </div>
 
-    {hasActiveFilters && (
+  <button
+    onClick={() => setFiltersOpen((prev) => !prev)}
+    className="rounded-lg border px-2 py-1 text-xs font-semibold"
+  >
+    {filtersOpen ? 'Hide' : 'Show'}
+  </button>
+
+  {hasActiveFilters && (
       <button
         type="button"
         onClick={clearFilters}
@@ -2356,7 +2364,11 @@ setLoading(false);
     )}
   </div>
 
-  <div className="grid grid-cols-1 gap-2 sm:grid-cols-2 xl:grid-cols-4">
+  <div
+  className={`${
+    filtersOpen ? 'grid' : 'hidden'
+  } grid-cols-1 gap-2 sm:grid sm:grid-cols-2 xl:grid-cols-4`}
+>
 
     <select
       value={countryFilter}
