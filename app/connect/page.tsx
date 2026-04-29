@@ -6,6 +6,7 @@ import { supabase } from '@/lib/supabaseClient';
 import { touchLastLogin } from '@/lib/touchLastLogin';
 import Sidebar from '../messages/components/Sidebar';
 import ChatPanel from '../messages/components/ChatPanel';
+import { Suspense } from 'react';
 import ProfilePreviewModal from '../messages/components/ProfilePreviewModal';
 import type {
   BlockRow,
@@ -298,6 +299,14 @@ function writeSettingsTranslationCache(cacheKey: string, map: Record<string, str
 }
 
 export default function ConnectPage() {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <ConnectPageContent />
+    </Suspense>
+  );
+}
+function ConnectPageContent() {
+
   const router = useRouter();
   const searchParams = useSearchParams();
 

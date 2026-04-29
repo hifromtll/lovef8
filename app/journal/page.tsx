@@ -1,12 +1,12 @@
 'use client';
 
 import Link from 'next/link';
-import { useEffect, useMemo, useState } from 'react';
+import { Suspense, useEffect, useMemo, useState } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { supabase } from '@/lib/supabaseClient';
 import JournalMemoryCard from './components/JournalMemoryCard';
 import JournalMediaGrid from './components/JournalMediaGrid';
-import MediaLightbox from './components/MediaLIghtbox.tsx';
+import MediaLightbox from './components/MediaLightbox';
 
 type JournalSliceMessage = {
   id: string;
@@ -37,6 +37,14 @@ type JournalMemoryRow = {
 type JournalView = 'memories' | 'media';
 
 export default function JournalPage() {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <JournalPageContent />
+    </Suspense>
+  );
+}
+
+function JournalPageContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
 
