@@ -1857,33 +1857,32 @@ useEffect(() => {
   </button>
 
   <button
-    type="button"
-    onClick={() => fileInputRef.current?.click()}
-    disabled={
-      isBlockedWithActive ||
-      sending ||
-      !['basic', 'plus', 'premium'].includes(
-        String(membershipTier || '').toLowerCase().trim()
-      )
+  type="button"
+  onClick={() => {
+    const hasAccess = ['basic', 'plus', 'premium'].includes(
+      String(membershipTier || '').toLowerCase().trim()
+    );
+
+    if (!hasAccess) {
+      alert('Upgrade membership to send photos & videos');
+      return;
     }
-    className={`inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl border text-xl transition ${
-      ['basic', 'plus', 'premium'].includes(
-        String(membershipTier || '').toLowerCase().trim()
-      )
-        ? 'border-neutral-300 bg-white hover:bg-neutral-50'
-        : 'cursor-not-allowed border-neutral-200 bg-neutral-100 text-neutral-400'
-    } disabled:opacity-50`}
-    aria-label="Choose image"
-    title={
-      ['basic', 'plus', 'premium'].includes(
-        String(membershipTier || '').toLowerCase().trim()
-      )
-        ? 'Choose image'
-        : 'Upgrade to send photos & videos'
-    }
-  >
-    🖼️
-  </button>
+
+    fileInputRef.current?.click();
+  }}
+  disabled={isBlockedWithActive || sending}
+  className={`inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl border text-xl transition ${
+    ['basic', 'plus', 'premium'].includes(
+      String(membershipTier || '').toLowerCase().trim()
+    )
+      ? 'border-neutral-300 bg-white hover:bg-neutral-50'
+      : 'border-neutral-200 bg-neutral-100 text-neutral-400'
+  } disabled:opacity-50`}
+  aria-label="Choose image"
+  title="Send photo or video"
+>
+  🖼️
+</button>
 
   <input
     ref={fileInputRef}
