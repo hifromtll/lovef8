@@ -2437,9 +2437,7 @@ console.log('LoveF8 spark check', {
                   {tr('LoveF8 Messages')}
                 </div>
 
-                <div className="mt-2 text-[22px] font-black tracking-tight text-neutral-950 sm:text-[28px]">
-                  {tr('Messages')}
-                </div>
+                
               </div>
 
               <div className="flex flex-nowrap items-center gap-2 overflow-x-auto pb-1">
@@ -2527,13 +2525,13 @@ console.log('LoveF8 spark check', {
             )}
 
             {sparkWarning && (
-              <div className="rounded-2xl border border-amber-200 bg-amber-50/80 px-4 py-2.5">
-                <div className="flex items-center justify-between gap-3">
+              <div className="rounded-xl border border-amber-200 bg-amber-50/70 px-3 py-1.5">
+                <div className="flex items-center justify-between gap-2">
                   <div className="min-w-0">
-                    <div className="text-sm font-bold text-amber-900">
+                    <div className="text-xs font-semibold text-amber-900">
                       {sparkWarning.title}
                     </div>
-                    <div className="text-xs text-amber-800">
+                    <div className="text-[11px] text-amber-800">
                       {sparkWarning.body}
                     </div>
                   </div>

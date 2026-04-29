@@ -1783,20 +1783,20 @@ useEffect(() => {
 
         <div className="border-t border-neutral-200/80 bg-white/92 px-3 py-3 pb-[calc(env(safe-area-inset-bottom)+12px)] backdrop-blur sm:px-4">
           <div className="mx-auto w-full max-w-3xl">
-            <div className="mb-2 flex flex-wrap gap-2">
-              {LOVEF8_QUICK_EMOJIS.map((emoji) => (
-                <button
-                  key={emoji}
-                  type="button"
-                  onClick={() => void appendEmoji(emoji)}
-                  disabled={isBlockedWithActive || sending}
-                  className="inline-flex h-9 min-w-9 items-center justify-center rounded-full border border-neutral-200 bg-white px-3 text-lg transition hover:bg-neutral-50 disabled:cursor-not-allowed disabled:opacity-50"
-                  aria-label={`Insert ${emoji}`}
-                >
-                  {emoji}
-                </button>
-              ))}
-            </div>
+            <div className="mb-1 flex gap-1.5 overflow-x-auto whitespace-nowrap pb-1">
+  {LOVEF8_QUICK_EMOJIS.map((emoji) => (
+    <button
+      key={emoji}
+      type="button"
+      onClick={() => void appendEmoji(emoji)}
+      disabled={isBlockedWithActive || sending}
+      className="inline-flex h-7 w-7 shrink-0 items-center justify-center rounded-full border border-neutral-200 bg-white text-sm transition hover:bg-neutral-50 disabled:cursor-not-allowed disabled:opacity-50"
+      aria-label={`Insert ${emoji}`}
+    >
+      {emoji}
+    </button>
+  ))}
+</div>
 
             <div className="flex items-end gap-3">
               <ComposerAvatar avatarUrl={activeOther?.avatar_url ?? null} label={chatTitle} />
