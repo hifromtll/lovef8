@@ -797,7 +797,7 @@ setTargetLanguage(profileLanguages[0] || 'English');
             </div>
           ) : (
             <div className="grid min-h-0 grid-cols-1 gap-3 lg:grid-cols-[320px_minmax(0,1fr)]">
-              <aside className="min-h-0 overflow-hidden rounded-3xl border border-neutral-200 bg-white shadow-sm">
+              <aside className={`${isGuide ? '' : 'hidden'} min-h-0 overflow-hidden rounded-3xl border border-neutral-200 bg-white shadow-sm`}>
                 <div className="grid h-full min-h-0 grid-rows-[auto_minmax(0,1fr)] p-3">
                   <div className="px-2 pb-3 pt-1 text-sm font-black uppercase tracking-wide text-neutral-500">
                     {isGuide
