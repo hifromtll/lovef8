@@ -1009,20 +1009,28 @@ export default function Sidebar({
                         </div>
                       </div>
 
-                      <div className="flex justify-end px-3 pb-3">
-                        <button
-                          type="button"
-                          onClick={() => void onHideConversation(c.id)}
-                          className={[
-                            'rounded-xl border px-3 py-2 text-xs font-semibold shadow-sm transition',
-                            unread
-                              ? 'border-sky-200 bg-white text-sky-900 hover:bg-sky-50'
-                              : 'border-neutral-300 bg-white text-neutral-800 hover:bg-fuchsia-50',
-                          ].join(' ')}
-                        >
-                          {trSafe('Hide')}
-                        </button>
-                      </div>
+                      <div className="flex justify-between px-3 pb-3 gap-2">
+  <button
+    type="button"
+    onClick={() => onSelectConversation(c.id)}
+    className="flex-1 rounded-xl bg-neutral-900 px-3 py-2 text-xs font-semibold text-white shadow-sm transition hover:opacity-90"
+  >
+    Open Chat
+  </button>
+
+  <button
+    type="button"
+    onClick={() => void onHideConversation(c.id)}
+    className={[
+      'rounded-xl border px-3 py-2 text-xs font-semibold shadow-sm transition',
+      unread
+        ? 'border-sky-200 bg-white text-sky-900 hover:bg-sky-50'
+        : 'border-neutral-300 bg-white text-neutral-800 hover:bg-fuchsia-50',
+    ].join(' ')}
+  >
+    {trSafe('Hide')}
+  </button>
+</div>
                     </div>
                   );
                 })}
