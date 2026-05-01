@@ -1794,9 +1794,7 @@ useEffect(() => {
 </div>
 
             <div className="flex items-end gap-3">
-              <ComposerAvatar avatarUrl={activeOther?.avatar_url ?? null} label={chatTitle} />
-
-              <div className="relative flex-1">
+  <div className="relative flex-1">
                 {remainingSparkLimit !== null && activeOther?.username && (
                   <div className="mb-3 pl-1 text-xs text-neutral-500">
                     {remainingSparkLimit > 0
