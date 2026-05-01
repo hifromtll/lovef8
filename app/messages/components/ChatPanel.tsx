@@ -1685,14 +1685,27 @@ useEffect(() => {
                         />
 
                         {!isBlockedWithActive && !isMe && (
-                          <button
-                            type="button"
-                            onClick={() => setReactingTo((prev) => (prev === m.id ? null : m.id))}
-                            className="rounded-full border border-neutral-300 bg-white px-2 py-1 text-[11px] font-medium text-neutral-700 transition hover:bg-neutral-50 hover:text-neutral-900"
-                          >
-                            React
-                          </button>
-                        )}
+  <>
+    {canReceiveSparks && (
+      <button
+        type="button"
+        onClick={() => void onSendSpark(15)}
+        disabled={sendingSpark}
+        className="rounded-full border border-amber-300 bg-amber-50 px-2 py-1 text-[11px] font-bold text-amber-900 transition hover:bg-amber-100 disabled:cursor-not-allowed disabled:opacity-50"
+      >
+        ⚡ Spark
+      </button>
+    )}
+
+    <button
+      type="button"
+      onClick={() => setReactingTo((prev) => (prev === m.id ? null : m.id))}
+      className="rounded-full border border-neutral-300 bg-white px-2 py-1 text-[11px] font-medium text-neutral-700 transition hover:bg-neutral-50 hover:text-neutral-900"
+    >
+      React
+    </button>
+  </>
+)}
 
                         {canEdit && !isBlockedWithActive && (
                           <button
