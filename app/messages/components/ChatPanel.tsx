@@ -82,7 +82,6 @@ type ChatPanelProps = {
   onUnblock: () => void | Promise<void>;
 };
 
-
 const COMPOSER_EMOJI_GROUPS: Array<{ title: string; emojis: string[] }> = [
   {
     title: 'LoveF8',
