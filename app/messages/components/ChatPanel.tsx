@@ -1689,7 +1689,7 @@ useEffect(() => {
     {canReceiveSparks && (
       <button
         type="button"
-        onClick={() => void onSendSpark(15)}
+        onClick={() => void onSendSpark(5)}
         disabled={sendingSpark}
         className="rounded-full border border-amber-300 bg-amber-50 px-2 py-1 text-[11px] font-bold text-amber-900 transition hover:bg-amber-100 disabled:cursor-not-allowed disabled:opacity-50"
       >
