@@ -1971,9 +1971,6 @@ useEffect(() => {
               </div>
             </div>
 
-            <div className="mt-2 text-xs text-neutral-500">
-              Composer emojis are expressive only. Paid Sparks stay separate.
-            </div>
           </div>
         </div>
 
