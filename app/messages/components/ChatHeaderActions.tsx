@@ -14,7 +14,7 @@ type ChatHeaderActionsProps = {
   onSendSpark?: (amount: number, kind?: 'normal' | 'super') => Promise<void> | void;
 };
 
-const SPARK_OPTIONS = [10, 20, 50, 100];
+const SPARK_OPTIONS = [20, 50, 100];
 const SUPER_SPARK_AMOUNT = 250;
 const SUPER_SPARK_COOLDOWN_MS = 6 * 24 * 60 * 60 * 1000;
 
