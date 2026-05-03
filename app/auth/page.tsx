@@ -426,6 +426,7 @@ export default function AuthPage() {
             </div>
           </section>
         </div>
+         </div>
       <style jsx>{`
         .auth-shell {
           position: relative;
