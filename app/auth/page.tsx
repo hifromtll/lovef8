@@ -214,13 +214,21 @@ export default function AuthPage() {
             </h1>
 
             <p className="brand-copy">
-              A warmer place to start real conversations, build real connections, and create an
-              experience that feels personal from the very first message.
-            </p>
+  LoveF8 is where real conversations actually happen.
+  <br />
+  <br />
+  A warmer place to start something real.
+  <br />
+  <br />
+  Show up as you are, and find someone who genuinely wants to talk back.
+  <br />
+  <br />
+  No pressure. No perfect-match promises — just something real from the very first message.
+</p>
 
             <div className="brand-tags">
               <div className="brand-tag">Real-time chat</div>
-              <div className="brand-tag">Sparks &amp; membership</div>
+              <div className="brand-tag">Real People</div>
               <div className="brand-tag">More human connection</div>
             </div>
           </section>
