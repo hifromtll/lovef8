@@ -420,12 +420,19 @@ export default function AuthPage() {
         }
 
         .brand-panel {
-          min-width: 0;
-          display: flex;
-          flex-direction: column;
-          justify-content: center;
-          padding: 28px 16px 28px 8px;
-        }
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 32px 22px;
+  border-radius: 34px;
+  background:
+    radial-gradient(circle at top left, rgba(255, 63, 157, 0.18), transparent 36%),
+    radial-gradient(circle at bottom right, rgba(139, 44, 245, 0.18), transparent 34%),
+    rgba(255, 255, 255, 0.42);
+  border: 1px solid rgba(255, 255, 255, 0.65);
+  box-shadow: 0 24px 70px rgba(83, 34, 115, 0.10);
+}
 
         .brand-pill {
           display: inline-flex;
@@ -471,15 +478,15 @@ export default function AuthPage() {
         }
 
         .brand-tag {
-          padding: 12px 16px;
-          border-radius: 16px;
-          background: rgba(255, 255, 255, 0.82);
-          border: 1px solid rgba(226, 202, 255, 0.9);
-          box-shadow: 0 12px 30px rgba(91, 33, 182, 0.07);
-          color: #4b3f66;
-          font-size: 14px;
-          font-weight: 700;
-        }
+  padding: 12px 16px;
+  border-radius: 999px;
+  background: linear-gradient(135deg, rgba(255, 63, 157, 0.14), rgba(139, 44, 245, 0.14));
+  border: 1px solid rgba(255, 105, 180, 0.30);
+  box-shadow: 0 12px 30px rgba(181, 55, 154, 0.10);
+  color: #3b214f;
+  font-size: 14px;
+  font-weight: 900;
+}
 
         .auth-card {
           min-width: 0;
@@ -499,11 +506,12 @@ export default function AuthPage() {
         }
 
         .card-logo {
-          width: 110px;
-          height: 110px;
-          object-fit: contain;
-          margin-bottom: 8px;
-        }
+  width: 150px;
+  height: 150px;
+  object-fit: contain;
+  margin-bottom: 10px;
+  filter: drop-shadow(0 16px 28px rgba(255, 63, 157, 0.22));
+}
 
         .card-title {
           font-size: 34px;
