@@ -1064,42 +1064,98 @@ export default function AuthPage() {
           }
         }
 
-        @media (max-width: 560px) {
-          .auth-shell {
-            padding: 14px 10px 24px;
-          }
+       @media (max-width: 560px) {
+  .auth-shell {
+    padding: 12px 8px 20px;
+  }
 
-          .brand-title {
-            font-size: 36px;
-            line-height: 0.98;
-          }
+  .auth-grid {
+    gap: 12px;
+  }
 
-          .brand-copy {
-            font-size: 16px;
-          }
+  .brand-panel {
+    padding: 18px 14px;
+    border-radius: 26px;
+  }
 
-          .mode-switch {
-            gap: 8px;
-            padding: 5px;
-          }
+  .brand-intro {
+    margin-bottom: 12px;
+  }
 
-          .mode-button {
-            padding: 11px 10px;
-            font-size: 14px;
-          }
+  .brand-intro-title {
+    font-size: 22px;
+    line-height: 1.08;
+  }
 
-          .card-title {
-            font-size: 28px;
-          }
+  .brand-intro-subtitle {
+    margin-top: 6px;
+    font-size: 13px;
+    line-height: 1.35;
+  }
 
-          .auth-card {
-            padding: 14px;
-          }
+  .brand-title {
+    font-size: 26px;
+    line-height: 1.04;
+    gap: 2px;
+    margin-top: 10px;
+  }
 
-          .form-card {
-            padding: 14px;
-          }
-        }
+  .brand-copy {
+    margin-top: 12px;
+    font-size: 14px;
+    line-height: 1.5;
+  }
+
+  .brand-tags {
+    margin-top: 16px;
+    gap: 8px;
+  }
+
+  .brand-tag {
+    padding: 8px 12px;
+    font-size: 12px;
+    line-height: 1.2;
+  }
+
+  .brand-trust-line {
+    margin-top: 12px;
+    font-size: 13px;
+    line-height: 1.35;
+  }
+
+  .card-logo {
+    width: 110px;
+    height: 110px;
+  }
+
+  .mode-switch {
+    gap: 8px;
+    padding: 5px;
+  }
+
+  .mode-button {
+    padding: 11px 10px;
+    font-size: 14px;
+  }
+
+  .card-title {
+    font-size: 28px;
+  }
+
+  .auth-card {
+    padding: 14px;
+    border-radius: 22px;
+  }
+
+  .form-card {
+    padding: 14px;
+  }
+
+  .mini-chat-card {
+    padding: 12px;
+    border-radius: 18px;
+  }
+}
       `}</style>
     </main>
   );
