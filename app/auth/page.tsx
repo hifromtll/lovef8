@@ -526,7 +526,7 @@ export default function AuthPage() {
           text-transform: uppercase;
         }
 
-        .brand-title {
+     .brand-title {
   margin-top: 16px;
   margin-bottom: 0;
   display: grid;
@@ -538,16 +538,82 @@ export default function AuthPage() {
   color: #1f1333;
 }
 
-.brand-title {
-  margin-top: 16px;
-  margin-bottom: 0;
-  display: grid;
-  gap: 4px;
-  font-size: clamp(32px, 4.4vw, 54px);
-  line-height: 1.02;
-  font-weight: 900;
-  letter-spacing: -0.045em;
-  color: #1f1333;
+.typing-line {
+  display: block;
+  width: 0;
+  max-width: fit-content;
+  overflow: hidden;
+  white-space: nowrap;
+  border-right: 4px solid rgba(139, 44, 245, 0.8);
+}
+
+.typing-line-1 {
+  animation:
+    typeLoopLine1 7.2s steps(19, end) infinite,
+    blinkCaret 0.75s step-end infinite;
+}
+
+.typing-line-2 {
+  animation:
+    typeLoopLine2 7.2s steps(12, end) infinite,
+    blinkCaret 0.75s step-end infinite;
+}
+
+.typing-line-3 {
+  animation:
+    typeLoopLine3 7.2s steps(12, end) infinite,
+    blinkCaret 0.75s step-end infinite;
+}
+
+@keyframes typeLoopLine1 {
+  0% {
+    width: 0;
+  }
+  18% {
+    width: 19ch;
+  }
+  82% {
+    width: 19ch;
+  }
+  100% {
+    width: 0;
+  }
+}
+
+@keyframes typeLoopLine2 {
+  0%, 22% {
+    width: 0;
+  }
+  40% {
+    width: 12ch;
+  }
+  82% {
+    width: 12ch;
+  }
+  100% {
+    width: 0;
+  }
+}
+
+@keyframes typeLoopLine3 {
+  0%, 44% {
+    width: 0;
+  }
+  62% {
+    width: 12ch;
+  }
+  82% {
+    width: 12ch;
+  }
+  100% {
+    width: 0;
+  }
+}
+
+@keyframes blinkCaret {
+  50% {
+    border-color: transparent;
+  }
 }
 
         .brand-copy {
@@ -734,27 +800,27 @@ export default function AuthPage() {
   box-shadow: 0 10px 24px rgba(181, 55, 154, 0.22);
 }
   .mini-message-1 {
-  animation: miniMessageIn 0.45s ease-out both;
+  animation: miniMessageLoop 8.5s ease-out infinite;
 }
 
 .mini-message-2 {
-  animation: miniMessageIn 0.45s ease-out 0.8s both;
+  animation: miniMessageLoop 8.5s ease-out 0.8s infinite;
 }
 
 .mini-typing-3 {
-  animation: miniTypingShow 2.1s ease-out 1.45s both;
+  animation: miniTypingLoop 8.5s ease-out 1.45s infinite;
 }
 
 .mini-message-4 {
-  animation: miniMessageIn 0.45s ease-out 3.1s both;
+  animation: miniMessageLoop 8.5s ease-out 3.1s infinite;
 }
 
 .mini-message-5 {
-  animation: miniMessageIn 0.45s ease-out 3.8s both;
+  animation: miniMessageLoop 8.5s ease-out 3.8s infinite;
 }
 
 .mini-message-6 {
-  animation: miniMessageIn 0.45s ease-out 4.5s both;
+  animation: miniMessageLoop 8.5s ease-out 4.5s infinite;
 }
 
 .mini-typing {
@@ -787,36 +853,47 @@ export default function AuthPage() {
   animation-delay: 0.3s;
 }
 
-@keyframes miniMessageIn {
-  from {
+@keyframes miniMessageLoop {
+  0% {
     opacity: 0;
     transform: translateY(8px) scale(0.98);
   }
-  to {
+  8% {
     opacity: 1;
     transform: translateY(0) scale(1);
   }
+  78% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(4px) scale(0.98);
+  }
 }
 
-@keyframes miniTypingShow {
+@keyframes miniTypingLoop {
   0% {
     opacity: 0;
     transform: translateY(8px);
   }
-  15% {
+  10% {
     opacity: 1;
     transform: translateY(0);
   }
-  80% {
+  32% {
     opacity: 1;
     transform: translateY(0);
+  }
+  42% {
+    opacity: 0;
+    transform: translateY(4px);
   }
   100% {
     opacity: 0;
     transform: translateY(4px);
-    display: none;
   }
-}
+
 
 @keyframes miniDotBounce {
   0%, 80%, 100% {
