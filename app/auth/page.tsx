@@ -47,6 +47,7 @@ export default function AuthPage() {
 
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
   const [username, setUsername] = useState('');
 
   const [busy, setBusy] = useState(false);
@@ -300,15 +301,24 @@ export default function AuthPage() {
               <label className="field-label">Password</label>
 
               <input
-                type="password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                placeholder="••••••••"
-                style={{
-                  ...inputStyle,
-                  marginBottom: mode === 'signup' ? 10 : 12,
-                }}
-              />
+  type={showPassword ? 'text' : 'password'}
+  value={password}
+  onChange={(e) => setPassword(e.target.value)}
+  placeholder="••••••••"
+  style={{
+    ...inputStyle,
+    marginBottom: 8,
+  }}
+/>
+
+<label className="show-password-label">
+  <input
+    type="checkbox"
+    checked={showPassword}
+    onChange={(e) => setShowPassword(e.target.checked)}
+  />
+  <span>Show password</span>
+</label>
 
               {mode === 'login' ? (
                 <>
@@ -584,6 +594,17 @@ export default function AuthPage() {
           margin-bottom: 14px;
         }
 
+        .show-password-label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 14px;
+  color: #5d5078;
+  font-size: 13px;
+  font-weight: 800;
+  cursor: pointer;
+}
+  
         .primary-button {
           width: 100%;
           padding: 14px 16px;
