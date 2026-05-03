@@ -213,13 +213,11 @@ export default function AuthPage() {
               </div>
             </div>
 
-            <h1 className="brand-title">
-              Real conversations.
-              <br />
-              Real people.
-              <br />
-              No pressure.
-            </h1>
+            <h1 className="brand-title" aria-label="Real conversations. Real people. No pressure.">
+  <span className="typing-line typing-line-1">Real conversations.</span>
+  <span className="typing-line typing-line-2">Real people.</span>
+  <span className="typing-line typing-line-3">No pressure.</span>
+</h1>
 
             <p className="brand-copy">
               LoveF8 is where real conversations actually happen.
@@ -529,15 +527,28 @@ export default function AuthPage() {
         }
 
         .brand-title {
-          margin-top: 20px;
-          margin-bottom: 0;
-          font-size: clamp(42px, 6vw, 72px);
-          line-height: 0.94;
-          font-weight: 900;
-          letter-spacing: -0.04em;
-          color: #1f1333;
-          text-wrap: balance;
-        }
+  margin-top: 16px;
+  margin-bottom: 0;
+  display: grid;
+  gap: 4px;
+  font-size: clamp(32px, 4.4vw, 54px);
+  line-height: 1.02;
+  font-weight: 900;
+  letter-spacing: -0.045em;
+  color: #1f1333;
+}
+
+.brand-title {
+  margin-top: 16px;
+  margin-bottom: 0;
+  display: grid;
+  gap: 4px;
+  font-size: clamp(32px, 4.4vw, 54px);
+  line-height: 1.02;
+  font-weight: 900;
+  letter-spacing: -0.045em;
+  color: #1f1333;
+}
 
         .brand-copy {
           margin-top: 20px;
