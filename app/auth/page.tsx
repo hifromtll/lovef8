@@ -456,13 +456,13 @@ export default function AuthPage() {
         }
 
         .auth-grid {
-          width: 100%;
-          max-width: 1120px;
-          display: grid;
-          grid-template-columns: minmax(0, 1.05fr) minmax(0, 0.95fr);
-          gap: 28px;
-          align-items: center;
-        }
+  width: 100%;
+  max-width: 1120px;
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 16px;
+  align-items: start;
+}
 
         .brand-panel {
   min-width: 0;
@@ -1000,6 +1000,14 @@ export default function AuthPage() {
           color: #534566;
           cursor: pointer;
         }
+
+@media (min-width: 961px) {
+  .auth-grid {
+    grid-template-columns: minmax(0, 1.05fr) minmax(0, 0.95fr);
+    gap: 28px;
+    align-items: center;
+  }
+}
 
         @media (max-width: 960px) {
           .auth-shell {
