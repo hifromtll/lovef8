@@ -204,38 +204,45 @@ export default function AuthPage() {
       <div className="auth-shell">
         <div className="auth-grid">
           <section className="brand-panel">
-            <div className="brand-pill">LoveF8</div>
+            <div className="brand-intro">
+              <div className="brand-intro-title">
+                Welcome to <span>LoveF8.com</span>
+              </div>
+              <div className="brand-intro-subtitle">
+                Where real conversations happen, with Real People.
+              </div>
+            </div>
 
             <h1 className="brand-title">
-  Real conversations.
-  <br />
-  Real people.
-  <br />
-  No pressure.
-</h1>
+              Real conversations.
+              <br />
+              Real people.
+              <br />
+              No pressure.
+            </h1>
 
             <p className="brand-copy">
-  LoveF8 is where real conversations actually happen.
-  <br />
-  <br />
-  A warmer place to start something real.
-  <br />
-  <br />
-  Show up as you are, and find someone who genuinely wants to talk back.
-  <br />
-  <br />
-  No pressure. No perfect-match promises — just something real from the very first message.
-</p>
+              LoveF8 is where real conversations actually happen.
+              <br />
+              <br />
+              A warmer place to start something real.
+              <br />
+              <br />
+              Show up as you are, and find someone who genuinely wants to talk back.
+              <br />
+              <br />
+              No pressure. No perfect-match promises — just something real from the very first message.
+            </p>
 
-           <div className="brand-tags">
-  <div className="brand-tag">Real-time conversations</div>
-  <div className="brand-tag">Someone to talk to</div>
-  <div className="brand-tag">Real human connection</div>
-</div>
+            <div className="brand-tags">
+              <div className="brand-tag">Real-time conversations</div>
+              <div className="brand-tag">Someone to talk to</div>
+              <div className="brand-tag">Real human connection</div>
+            </div>
 
-<div className="brand-trust-line">
-  Built for people who want someone to actually talk back.
-</div>
+            <div className="brand-trust-line">
+              Built for people who want someone to actually talk back.
+            </div>
           </section>
 
           <section className="auth-card">
@@ -429,6 +436,10 @@ export default function AuthPage() {
   </div>
 
   <div className="mini-message other mini-message-4">I missed talking to you last night.</div>
+  <div className="mini-message mine mini-message-5">I did also. Was stuck at work late.</div>
+  <div className="mini-message other mini-message-6">
+    So sorry to hear that. Did you get my last picture?
+  </div>
 </div>
             </div>
           </section>
@@ -468,6 +479,36 @@ export default function AuthPage() {
     rgba(255, 255, 255, 0.42);
   border: 1px solid rgba(255, 255, 255, 0.65);
   box-shadow: 0 24px 70px rgba(83, 34, 115, 0.10);
+}
+
+.brand-intro {
+  margin-bottom: 18px;
+}
+
+.brand-intro-title {
+  font-size: clamp(24px, 3vw, 34px);
+  line-height: 1.1;
+  font-weight: 900;
+  letter-spacing: -0.03em;
+  color: #2b1841;
+}
+
+.brand-intro-title span {
+  background: linear-gradient(135deg, #ff3f9d 0%, #8b2cf5 55%, #4f46e5 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  color: transparent;
+  text-shadow: 0 10px 24px rgba(181, 55, 154, 0.14);
+}
+
+.brand-intro-subtitle {
+  margin-top: 8px;
+  max-width: 540px;
+  font-size: 15px;
+  line-height: 1.5;
+  font-weight: 700;
+  color: #6a5a82;
 }
 
         .brand-pill {
@@ -695,6 +736,14 @@ export default function AuthPage() {
 
 .mini-message-4 {
   animation: miniMessageIn 0.45s ease-out 3.1s both;
+}
+
+.mini-message-5 {
+  animation: miniMessageIn 0.45s ease-out 3.8s both;
+}
+
+.mini-message-6 {
+  animation: miniMessageIn 0.45s ease-out 4.5s both;
 }
 
 .mini-typing {
