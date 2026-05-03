@@ -207,12 +207,12 @@ export default function AuthPage() {
             <div className="brand-pill">LoveF8</div>
 
             <h1 className="brand-title">
-              Chat.
-              <br />
-              Connect.
-              <br />
-              Experience.
-            </h1>
+  Real conversations.
+  <br />
+  Real people.
+  <br />
+  No pressure.
+</h1>
 
             <p className="brand-copy">
   LoveF8 is where real conversations actually happen.
@@ -227,11 +227,15 @@ export default function AuthPage() {
   No pressure. No perfect-match promises — just something real from the very first message.
 </p>
 
-            <div className="brand-tags">
-              <div className="brand-tag">Real-time chat</div>
-              <div className="brand-tag">Real People</div>
-              <div className="brand-tag">More human connection</div>
-            </div>
+           <div className="brand-tags">
+  <div className="brand-tag">Real-time conversations</div>
+  <div className="brand-tag">Someone to talk to</div>
+  <div className="brand-tag">Real human connection</div>
+</div>
+
+<div className="brand-trust-line">
+  Built for people who want someone to actually talk back.
+</div>
           </section>
 
           <section className="auth-card">
@@ -404,10 +408,24 @@ export default function AuthPage() {
                 </>
               )}
             </div>
+
+            <div className="mini-chat-card">
+              <div className="mini-chat-header">
+                <div>
+                  <div className="mini-chat-title">Live conversation preview</div>
+                  <div className="mini-chat-subtitle">A warmer way to start talking</div>
+                </div>
+                <div className="mini-chat-live">Live</div>
+              </div>
+
+              <div className="mini-chat-messages">
+                <div className="mini-message other">Hello, how are you?</div>
+                <div className="mini-message mine">Good, thank you for asking.</div>
+                <div className="mini-message other">I missed talking to you last night.</div>
+              </div>
+            </div>
           </section>
         </div>
-      </div>
-
       <style jsx>{`
         .auth-shell {
           position: relative;
@@ -498,6 +516,14 @@ export default function AuthPage() {
   font-weight: 900;
 }
 
+.brand-trust-line {
+  margin-top: 18px;
+  max-width: 520px;
+  color: #4b3f66;
+  font-size: 15px;
+  font-weight: 800;
+}
+
         .auth-card {
           min-width: 0;
           border-radius: 28px;
@@ -576,6 +602,78 @@ export default function AuthPage() {
           box-sizing: border-box;
         }
 
+        .mini-chat-card {
+  margin-top: 18px;
+  border-radius: 22px;
+  border: 1px solid rgba(226, 202, 255, 0.9);
+  background:
+    radial-gradient(circle at top left, rgba(255, 63, 157, 0.12), transparent 38%),
+    radial-gradient(circle at bottom right, rgba(139, 44, 245, 0.12), transparent 38%),
+    rgba(255, 255, 255, 0.94);
+  box-shadow: 0 18px 42px rgba(83, 34, 115, 0.10);
+  padding: 16px;
+}
+
+.mini-chat-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 14px;
+}
+
+.mini-chat-title {
+  font-size: 14px;
+  font-weight: 900;
+  color: #231433;
+}
+
+.mini-chat-subtitle {
+  margin-top: 3px;
+  font-size: 12px;
+  font-weight: 700;
+  color: #7b6e94;
+}
+
+.mini-chat-live {
+  border-radius: 999px;
+  background: #ecfdf3;
+  border: 1px solid #bbf7d0;
+  color: #15803d;
+  padding: 5px 9px;
+  font-size: 11px;
+  font-weight: 900;
+  text-transform: uppercase;
+}
+
+.mini-chat-messages {
+  display: grid;
+  gap: 9px;
+}
+
+.mini-message {
+  max-width: 86%;
+  border-radius: 16px;
+  padding: 10px 12px;
+  font-size: 13px;
+  line-height: 1.35;
+  font-weight: 700;
+}
+
+.mini-message.other {
+  justify-self: start;
+  background: #fff;
+  border: 1px solid #eadcff;
+  color: #3b214f;
+}
+
+.mini-message.mine {
+  justify-self: end;
+  background: linear-gradient(135deg, #ff3f9d 0%, #8b2cf5 100%);
+  color: #fff;
+  box-shadow: 0 10px 24px rgba(181, 55, 154, 0.22);
+}
+
         .field-label {
           display: block;
           font-size: 12px;
@@ -604,7 +702,7 @@ export default function AuthPage() {
   font-weight: 800;
   cursor: pointer;
 }
-  
+
         .primary-button {
           width: 100%;
           padding: 14px 16px;
