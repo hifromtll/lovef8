@@ -219,28 +219,22 @@ export default function AuthPage() {
   <span className="typing-line typing-line-3">No pressure.</span>
 </h1>
 
-            <p className="brand-copy">
-              LoveF8 is where real conversations actually happen.
-              <br />
-              <br />
-              A warmer place to start something real.
-              <br />
-              <br />
-              Show up as you are, and find someone who genuinely wants to talk back.
-              <br />
-              <br />
-              No pressure. No perfect-match promises — just something real from the very first message.
-            </p>
+            <div className="brand-copy">
+  <div>LoveF8 is where real conversations actually happen.</div>
+  <div>A warmer place to start something real.</div>
+  <div>Show up as you are, and find someone who genuinely wants to talk back.</div>
+  <div>No pressure. No perfect-match promises — just something real from the very first message.</div>
+</div>
 
-            <div className="brand-tags">
-              <div className="brand-tag">Real-time conversations</div>
-              <div className="brand-tag">Someone to talk to</div>
-              <div className="brand-tag">Real human connection</div>
-            </div>
+<div className="brand-tags">
+  <div className="brand-tag">Real-time conversations</div>
+  <div className="brand-tag">Someone to talk to</div>
+  <div className="brand-tag">Real human connection</div>
+</div>
 
-            <div className="brand-trust-line">
-              Built for people who want someone to actually talk back.
-            </div>
+<div className="brand-trust-line">
+  Built for people who want someone to actually talk back.
+</div>
           </section>
 
           <section className="auth-card">
@@ -617,12 +611,14 @@ export default function AuthPage() {
 }
 
         .brand-copy {
-          margin-top: 20px;
-          max-width: 560px;
-          font-size: 18px;
-          line-height: 1.65;
-          color: #5f5575;
-        }
+  margin-top: 14px;
+  max-width: 560px;
+  display: grid;
+  gap: 12px;
+  font-size: 18px;
+  line-height: 1.45;
+  color: #5f5575;
+}
 
         .brand-tags {
           margin-top: 28px;
@@ -1101,22 +1097,23 @@ export default function AuthPage() {
   }
 
   .brand-copy {
-    margin-top: 12px;
-    font-size: 14px;
-    line-height: 1.5;
-  }
+  margin-top: 10px;
+  gap: 10px;
+  font-size: 13px;
+  line-height: 1.35;
+}
 
   .brand-tags {
-    margin-top: 16px;
-    gap: 8px;
-  }
+  margin-top: 12px;
+  gap: 6px;
+}
 
-  .brand-tag {
-    padding: 8px 12px;
-    font-size: 12px;
-    line-height: 1.2;
-  }
-
+.brand-tag {
+  padding: 6px 10px;
+  font-size: 11px;
+  line-height: 1.1;
+}
+  
   .brand-trust-line {
     margin-top: 12px;
     font-size: 13px;
