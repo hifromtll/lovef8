@@ -419,10 +419,17 @@ export default function AuthPage() {
               </div>
 
               <div className="mini-chat-messages">
-                <div className="mini-message other">Hello, how are you?</div>
-                <div className="mini-message mine">Good, thank you for asking.</div>
-                <div className="mini-message other">I missed talking to you last night.</div>
-              </div>
+  <div className="mini-message other mini-message-1">Hello, how are you?</div>
+  <div className="mini-message mine mini-message-2">Good, thank you for asking.</div>
+
+  <div className="mini-typing mini-typing-3" aria-label="Someone is typing">
+    <span></span>
+    <span></span>
+    <span></span>
+  </div>
+
+  <div className="mini-message other mini-message-4">I missed talking to you last night.</div>
+</div>
             </div>
           </section>
         </div>
@@ -673,6 +680,93 @@ export default function AuthPage() {
   background: linear-gradient(135deg, #ff3f9d 0%, #8b2cf5 100%);
   color: #fff;
   box-shadow: 0 10px 24px rgba(181, 55, 154, 0.22);
+}
+  .mini-message-1 {
+  animation: miniMessageIn 0.45s ease-out both;
+}
+
+.mini-message-2 {
+  animation: miniMessageIn 0.45s ease-out 0.8s both;
+}
+
+.mini-typing-3 {
+  animation: miniTypingShow 2.1s ease-out 1.45s both;
+}
+
+.mini-message-4 {
+  animation: miniMessageIn 0.45s ease-out 3.1s both;
+}
+
+.mini-typing {
+  justify-self: start;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  width: fit-content;
+  border-radius: 16px;
+  border: 1px solid #eadcff;
+  background: #fff;
+  padding: 11px 13px;
+  box-shadow: 0 10px 24px rgba(83, 34, 115, 0.06);
+}
+
+.mini-typing span {
+  width: 7px;
+  height: 7px;
+  border-radius: 999px;
+  background: #8b2cf5;
+  opacity: 0.35;
+  animation: miniDotBounce 1s infinite;
+}
+
+.mini-typing span:nth-child(2) {
+  animation-delay: 0.15s;
+}
+
+.mini-typing span:nth-child(3) {
+  animation-delay: 0.3s;
+}
+
+@keyframes miniMessageIn {
+  from {
+    opacity: 0;
+    transform: translateY(8px) scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes miniTypingShow {
+  0% {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  15% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  80% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(4px);
+    display: none;
+  }
+}
+
+@keyframes miniDotBounce {
+  0%, 80%, 100% {
+    transform: translateY(0);
+    opacity: 0.35;
+  }
+  40% {
+    transform: translateY(-4px);
+    opacity: 1;
+  }
 }
 
         .field-label {
