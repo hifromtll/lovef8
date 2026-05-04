@@ -1788,19 +1788,13 @@ useEffect(() => {
           )}
         </div>
 
-        <div className="border-t border-neutral-200/80 bg-white/92 px-3 py-3 pb-[calc(env(safe-area-inset-bottom)+12px)] backdrop-blur sm:px-4">
+        
+    <div className="border-t border-neutral-200/80 bg-white/92 px-3 py-3 pb-[calc(env(safe-area-inset-bottom)+12px)] backdrop-blur sm:px-4">
   <div className="mx-auto w-full max-w-3xl">
-    <HostConversationFeedbackPrompt
-      hostId={activeOther?.role === 'host' ? activeOther.id : null}
-      memberId={userId}
-      conversationId={activeConversationId}
-      isHostConversation={
-        activeOther?.role === 'host' &&
-        activeOther?.approved === true &&
-        messages.length >= 4
-      }
-    />
 
+    <div className="flex items-end gap-3">
+      
+    </div>
     <div className="flex items-end gap-3">
   <div className="relative flex-1">
                 {remainingSparkLimit !== null && activeOther?.username && (
