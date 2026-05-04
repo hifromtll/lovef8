@@ -932,23 +932,33 @@ export default function AuthPage() {
 }
 
         .primary-button {
-          width: 100%;
-          padding: 14px 16px;
-          border-radius: 14px;
-          border: none;
-          background: linear-gradient(135deg, #ff3f9d 0%, #8b2cf5 100%);
-          color: white;
-          cursor: pointer;
-          font-weight: 900;
-          font-size: 15px;
-          box-shadow: 0 16px 34px rgba(181, 55, 154, 0.26);
-          opacity: 1;
-        }
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  min-height: 52px;
+  margin-top: 8px;
+  padding: 14px 16px;
+  border-radius: 14px;
+  border: none;
+  outline: none;
+  appearance: none;
+  -webkit-appearance: none;
+  background: linear-gradient(135deg, #ff3f9d 0%, #8b2cf5 100%);
+  color: #ffffff;
+  cursor: pointer;
+  font-weight: 900;
+  font-size: 15px;
+  text-align: center;
+  text-decoration: none;
+  box-shadow: 0 16px 34px rgba(181, 55, 154, 0.26);
+  opacity: 1;
+}
 
-        .primary-button:disabled {
-          cursor: not-allowed;
-          opacity: 0.65;
-        }
+.primary-button:disabled {
+  cursor: not-allowed;
+  opacity: 0.65;
+}
 
         .reset-block {
           margin-top: 18px;

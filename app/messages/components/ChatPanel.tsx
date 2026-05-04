@@ -2,7 +2,7 @@
 
 import ChatHeaderActions from './ChatHeaderActions';
 import ComposerAvatar from './ComposerAvatar';
-import HostConversationFeedbackPrompt from './HostConversationFeedbackPrompt';
+import HostConversationFeedbackPrompt from './ChatHeaderActions';
 import { ChangeEvent, useEffect, useMemo, useRef, useState } from 'react';
 import { supabase } from '@/lib/supabaseClient';
 import { EDIT_WINDOW_MS } from '../utils';
