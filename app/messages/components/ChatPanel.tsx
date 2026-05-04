@@ -2,7 +2,7 @@
 
 import ChatHeaderActions from './ChatHeaderActions';
 import ComposerAvatar from './ComposerAvatar';
-import HostConversationFeedbackPrompt from './ChatHeaderActions';
+import HostConversationFeedbackPrompt from './HostConversationFeedbackPrompt';
 import { ChangeEvent, useEffect, useMemo, useRef, useState } from 'react';
 import { supabase } from '@/lib/supabaseClient';
 import { EDIT_WINDOW_MS } from '../utils';
@@ -922,6 +922,20 @@ useEffect(() => {
     if (nearBottom) setShowJumpToLatest(false);
   }, [activeConversationId]);
 
+useEffect(() => {
+  if (!activeConversationId) return;
+  if (requestedAnchorMessageId) return;
+  if (messages.length === 0) return;
+
+  const timer = window.setTimeout(() => {
+    messagesEndRef.current?.scrollIntoView({ behavior: 'auto' });
+    wasNearBottomRef.current = true;
+    setShowJumpToLatest(false);
+  }, 250);
+
+  return () => window.clearTimeout(timer);
+}, [activeConversationId, messages.length, requestedAnchorMessageId, messagesEndRef]);
+
   useEffect(() => {
     const el = scrollAreaRef.current;
     if (!el) return;
@@ -1791,12 +1805,18 @@ useEffect(() => {
         
     <div className="border-t border-neutral-200/80 bg-white/92 px-3 py-3 pb-[calc(env(safe-area-inset-bottom)+12px)] backdrop-blur sm:px-4">
   <div className="mx-auto w-full max-w-3xl">
+  <HostConversationFeedbackPrompt
+    hostId={activeOther?.role === 'host' ? activeOther.id : null}
+    memberId={userId}
+    conversationId={activeConversationId}
+    isHostConversation={
+      activeOther?.role === 'host' &&
+      activeOther?.approved === true &&
+      messages.length >= 4
+    }
+  />
 
-    <div className="flex items-end gap-3">
-      
-    </div>
-    <div className="flex items-end gap-3">
-  <div className="relative flex-1">
+  <div className="flex items-end gap-3">
                 {remainingSparkLimit !== null && activeOther?.username && (
                   <div className="mb-3 pl-1 text-xs text-neutral-500">
                     {remainingSparkLimit > 0
@@ -1974,7 +1994,6 @@ useEffect(() => {
             </div>
 
           </div>
-        </div>
 
         {lightboxImageUrl && (
           <div
