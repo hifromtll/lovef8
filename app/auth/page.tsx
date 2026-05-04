@@ -325,14 +325,31 @@ export default function AuthPage() {
 
               {mode === 'login' ? (
                 <>
-                  <button
-                    onClick={handleLogin}
-                    disabled={busy}
-                    type="button"
-                    className="primary-button"
-                  >
-                    {busy ? 'Signing in...' : 'Login'}
-                  </button>
+                 <button
+  onClick={handleLogin}
+  disabled={busy}
+  type="button"
+  style={{
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    width: '100%',
+    minHeight: 52,
+    marginTop: 10,
+    padding: '14px 16px',
+    borderRadius: 14,
+    border: 'none',
+    background: 'linear-gradient(135deg, #ff3f9d 0%, #8b2cf5 100%)',
+    color: '#ffffff',
+    cursor: busy ? 'not-allowed' : 'pointer',
+    fontWeight: 900,
+    fontSize: 15,
+    boxShadow: '0 16px 34px rgba(181, 55, 154, 0.26)',
+    opacity: busy ? 0.65 : 1,
+  }}
+>
+  {busy ? 'Signing in...' : 'Login'}
+</button>
 
                   <div className="reset-block">
                     <div className="reset-title">Forgot password?</div>
