@@ -74,16 +74,12 @@ export default function HostConversationFeedbackPrompt({
         return;
       }
 
-      const sevenDaysAgo = new Date(
-        Date.now() - DAYS_BETWEEN_PROMPTS * 24 * 60 * 60 * 1000
-      ).toISOString();
-
       const { data, error } = await supabase
         .from('host_conversation_feedback')
         .select('id, created_at')
         .eq('host_id', hostId)
         .eq('member_id', memberId)
-        .gte('created_at', sevenDaysAgo)
+        .eq('conversation_id', conversationId)
         .limit(1);
 
       if (cancelled) return;
@@ -122,6 +118,13 @@ export default function HostConversationFeedbackPrompt({
     setIsSaving(false);
 
     if (error) {
+      if (error.code === '23505' || error.message.includes('duplicate key')) {
+        savePromptDismissed(memberId, hostId);
+        setSaved(true);
+        setCanShow(false);
+        return;
+      }
+
       console.error('Host feedback save error:', error);
       alert(`Could not save that yet: ${error.message}`);
       return;
