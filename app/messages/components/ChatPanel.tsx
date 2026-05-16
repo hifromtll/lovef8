@@ -1238,7 +1238,7 @@ useEffect(() => {
         `}</style>
 
         <div
-          className={`sticky top-0 z-10 border-b border-neutral-200/80 px-3 py-2.0 backdrop-blur transition-colors ${headerGlowClass}`}
+                    className={`sticky top-0 z-10 border-b border-neutral-200/80 px-2 py-1.5 backdrop-blur transition-colors sm:px-3 sm:py-2 ${headerGlowClass}`}
         >
           <div className="mx-auto w-full max-w-3xl">
             <div className="flex items-start justify-between gap-3">
@@ -1317,7 +1317,7 @@ useEffect(() => {
                       onClick={() => {
                         window.location.href = `/journal?conversationId=${activeConversationId}`;
                       }}
-                      className="rounded-xl border border-neutral-300 bg-white px-3 py-2 text-xs font-semibold text-neutral-800 transition hover:bg-neutral-50"
+                                            className="rounded-lg border border-neutral-300 bg-white px-2.5 py-1.5 text-[11px] font-semibold text-neutral-800 transition hover:bg-neutral-50 sm:rounded-xl sm:px-3 sm:py-2 sm:text-xs"
                     >
                       Journal
                     </button>
@@ -1330,23 +1330,23 @@ useEffect(() => {
                       <button
                         type="button"
                         onClick={() => void onUnblock()}
-                        className="rounded-xl border border-neutral-300 bg-white px-3 py-2 text-xs font-semibold text-neutral-800 transition hover:bg-neutral-50"
-                      >
+                        className="rounded-lg border border-neutral-300 bg-white px-2.5 py-1.5 text-[11px] font-semibold text-neutral-800 transition hover:bg-neutral-50 sm:rounded-xl sm:px-3 sm:py-2 sm:text-xs"
+                      >    
                         Unblock
                       </button>
                     ) : (
                       <button
                         type="button"
                         onClick={() => void onBlock()}
-                        className="rounded-xl border border-neutral-300 bg-white px-3 py-2 text-xs font-semibold text-neutral-800 transition hover:bg-neutral-50"
+                                                className="rounded-lg border border-neutral-300 bg-white px-2.5 py-1.5 text-[11px] font-semibold text-neutral-800 transition hover:bg-neutral-50 sm:rounded-xl sm:px-3 sm:py-2 sm:text-xs"
                       >
                         Block
                       </button>
                     )}
                   </div>
 
-                  {canReceiveSparks && (
-                    <div className="w-full">
+                                    {canReceiveSparks && (
+                    <div className="hidden w-full sm:block">
                       <ChatHeaderActions
                         otherProfile={{
                           display_name: chatTitle,
