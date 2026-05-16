@@ -2621,8 +2621,9 @@ console.log('LoveF8 spark check', {
             {showChatPanel && (
               <div className="flex min-w-0 flex-1 flex-col bg-white/55 backdrop-blur-[2px]">
                 <ChatPanel
-                  userId={userId}
+                                    userId={userId}
                   membershipTier={myProfile?.membership_tier}
+                  isApprovedHostMe={isApprovedHostMe}
                   activeConversationId={activeConversationId}
                   activeOther={activeOther}
                   requestedAnchorMessageId={pendingAnchorMessageId}

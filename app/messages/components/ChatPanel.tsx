@@ -46,7 +46,8 @@ type MediaMessageSpark = {
 
 type ChatPanelProps = {
   userId: string | null;
-  membershipTier?: string | null;
+    membershipTier?: string | null;
+  isApprovedHostMe?: boolean;
   activeConversationId: string | null;
   activeOther: ProfileMini | null;
   requestedAnchorMessageId: string | null;
@@ -466,8 +467,9 @@ function getMessageReactions(message: Message): MessageReaction[] {
 }
 
 export default function ChatPanel({
-  userId,
+    userId,
   membershipTier,
+  isApprovedHostMe = false,
   activeConversationId,
   activeOther,
   requestedAnchorMessageId,
@@ -1927,10 +1929,12 @@ useEffect(() => {
 
   <button
   type="button"
-  onClick={() => {
-    const hasAccess = ['basic', 'plus', 'premium'].includes(
+    onClick={() => {
+    const hasMembershipAccess = ['basic', 'plus', 'premium'].includes(
       String(membershipTier || '').toLowerCase().trim()
     );
+
+    const hasAccess = isApprovedHostMe || hasMembershipAccess;
 
     if (!hasAccess) {
       alert('Upgrade membership to send photos & videos');
@@ -1941,6 +1945,7 @@ useEffect(() => {
   }}
   disabled={isBlockedWithActive || sending}
   className={`inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border text-lg transition ${
+        isApprovedHostMe ||
     ['basic', 'plus', 'premium'].includes(
       String(membershipTier || '').toLowerCase().trim()
     )
