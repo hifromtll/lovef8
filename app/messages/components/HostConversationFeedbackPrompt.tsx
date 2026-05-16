@@ -112,23 +112,18 @@ export default function HostConversationFeedbackPrompt({
 
     setIsSaving(true);
 
-    const { error } = await supabase.from('host_conversation_feedback').upsert(
-      {
-        host_id: hostId,
-        member_id: memberId,
-        conversation_id: conversationId,
-        enjoyed_conversation: true,
-      },
-      {
-        onConflict: 'host_id,member_id,conversation_id',
-      }
-    );
+    const { error } = await supabase.from('host_conversation_feedback').insert({
+      host_id: hostId,
+      member_id: memberId,
+      conversation_id: conversationId,
+      enjoyed_conversation: true,
+    });
 
     setIsSaving(false);
 
     if (error) {
       console.error('Host feedback save error:', error);
-      alert('Could not save that yet. Please try again.');
+      alert(`Could not save that yet: ${error.message}`);
       return;
     }
 
@@ -146,21 +141,19 @@ export default function HostConversationFeedbackPrompt({
   }
 
   return (
-    <div className="mb-3 rounded-2xl border border-rose-100 bg-rose-50/80 px-3 py-2.5 text-sm text-rose-950 shadow-sm">
-      <div className="flex items-center justify-between gap-3">
+    <div className="mb-2 rounded-xl border border-rose-100 bg-rose-50/75 px-2.5 py-1.5 text-rose-950 shadow-sm">
+      <div className="flex items-center justify-between gap-2">
         <div className="min-w-0">
-          <div className="text-sm font-semibold">Did you enjoy this conversation?</div>
-          <div className="mt-0.5 text-xs text-rose-700">
-            Optional. We only ask once in a while.
-          </div>
+          <div className="truncate text-xs font-semibold">Enjoying this chat?</div>
+          <div className="truncate text-[11px] text-rose-700">Optional feedback.</div>
         </div>
 
-        <div className="flex shrink-0 items-center gap-2">
+        <div className="flex shrink-0 items-center gap-1.5">
           <button
             type="button"
             onClick={handleHeartClick}
             disabled={isSaving}
-            className="inline-flex h-10 w-10 items-center justify-center rounded-full bg-white text-xl text-rose-500 shadow-sm ring-1 ring-rose-200 transition hover:scale-105 hover:bg-rose-100 disabled:cursor-not-allowed disabled:opacity-60"
+            className="inline-flex h-8 w-8 items-center justify-center rounded-full bg-white text-lg text-rose-500 shadow-sm ring-1 ring-rose-200 transition hover:scale-105 hover:bg-rose-100 disabled:cursor-not-allowed disabled:opacity-60"
             aria-label="I enjoyed this conversation"
             title="I enjoyed this conversation"
           >
@@ -171,7 +164,7 @@ export default function HostConversationFeedbackPrompt({
             type="button"
             onClick={handleNotNow}
             disabled={isSaving}
-            className="rounded-full border border-rose-200 bg-white px-3 py-1.5 text-xs font-semibold text-rose-700 transition hover:bg-rose-100 disabled:cursor-not-allowed disabled:opacity-60"
+            className="rounded-full border border-rose-200 bg-white px-2.5 py-1 text-[11px] font-semibold text-rose-700 transition hover:bg-rose-100 disabled:cursor-not-allowed disabled:opacity-60"
           >
             Not now
           </button>
