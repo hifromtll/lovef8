@@ -280,7 +280,8 @@ function MessagesPageContent() {
   const [profilePreviewOpen, setProfilePreviewOpen] = useState(false);
   const [profilePreview, setProfilePreview] = useState<ProfilePreviewData | null>(null);
   const [activeBoosterSparks, setActiveBoosterSparks] = useState(0);
-  const [translationPromptDismissedByConvo, setTranslationPromptDismissedByConvo] = useState<Record<string, boolean>>({});
+    const [translationPromptDismissedByConvo, setTranslationPromptDismissedByConvo] = useState<Record<string, boolean>>({});
+  const [dismissedNewMessageBannerByConvo, setDismissedNewMessageBannerByConvo] = useState<Record<string, boolean>>({});
   const [targetLanguage, setTargetLanguage] = useState<string>('English');
 const [translatedTopNavMap, setTranslatedTopNavMap] = useState<Record<string, string>>({});
 const tr = (text: string) => translatedTopNavMap[text] || text;
@@ -1891,8 +1892,8 @@ console.log("MEDIA CHECK:", messageKind, !!mediaFile, mediaKind);
   const newMessageBanner = useMemo(() => {
     if (!userId) return null;
 
-    const unreadCids = Object.entries(unreadByConvo)
-      .filter(([, value]) => value)
+        const unreadCids = Object.entries(unreadByConvo)
+      .filter(([cid, value]) => value && !dismissedNewMessageBannerByConvo[cid])
       .map(([cid]) => cid);
 
     if (unreadCids.length === 0) return null;
@@ -1922,7 +1923,7 @@ console.log("MEDIA CHECK:", messageKind, !!mediaFile, mediaKind);
           : 'Someone';
 
     return { cid: bestCid, name };
-  }, [labels, lastByConvo, unreadByConvo, userId]);
+    }, [dismissedNewMessageBannerByConvo, labels, lastByConvo, unreadByConvo, userId]);
 
   useEffect(() => {
     function handleResize() {
@@ -2433,23 +2434,23 @@ console.log('LoveF8 spark check', {
       <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(180deg,rgba(255,255,255,0.10)_0%,rgba(255,255,255,0.42)_18%,rgba(255,255,255,0.88)_100%)]" />
 
       <div className="relative mx-auto flex h-full w-full max-w-7xl flex-col lg:px-4 lg:py-4">
-        <div className="sticky top-0 z-30 shrink-0 border-b border-fuchsia-100/80 bg-white/80 px-3 py-3 backdrop-blur-xl lg:static lg:rounded-t-[28px] lg:border lg:border-b-0 lg:bg-white/80 lg:px-4 lg:py-3">
-          <div className="flex flex-col gap-3">
-            <div className="flex flex-col gap-3 lg:flex-row lg:items-start lg:justify-between">
+                <div className="sticky top-0 z-30 shrink-0 border-b border-fuchsia-100/80 bg-white/80 px-2 py-1.5 backdrop-blur-xl lg:static lg:rounded-t-[28px] lg:border lg:border-b-0 lg:bg-white/80 lg:px-4 lg:py-3">
+                    <div className="flex flex-col gap-1.5 lg:gap-3">
+                        <div className="flex flex-col gap-1.5 lg:flex-row lg:items-start lg:justify-between lg:gap-3">
               <div className="min-w-0">
-                <div className="inline-flex items-center rounded-full border border-fuchsia-200/70 bg-white/80 px-3 py-1 text-[11px] font-extrabold uppercase tracking-[0.16em] text-fuchsia-700 shadow-sm">
+                                <div className="inline-flex items-center rounded-full border border-fuchsia-200/70 bg-white/80 px-2.5 py-0.5 text-[10px] font-extrabold uppercase tracking-[0.14em] text-fuchsia-700 shadow-sm lg:px-3 lg:py-1 lg:text-[11px]">
                   {tr('LoveF8 Messages')}
                 </div>
 
                 
               </div>
 
-              <div className="flex flex-nowrap items-center gap-2 overflow-x-auto pb-1">
+              <div className="flex flex-nowrap items-center gap-1.5 overflow-x-auto pb-0.5">
                
           <button
   type="button"
   onClick={() => setForceEnglish((prev) => !prev)}
-  className="rounded-xl border border-gray-300 bg-white px-3 py-2 text-xs font-bold text-gray-700 shadow-sm hover:bg-gray-100"
+    className="shrink-0 rounded-lg border border-gray-300 bg-white px-2.5 py-1.5 text-[11px] font-bold text-gray-700 shadow-sm hover:bg-gray-100 lg:rounded-xl lg:px-3 lg:py-2 lg:text-xs"
 >
   {forceEnglish ? 'Use Selected Language' : 'View in English'}
 </button>
@@ -2457,7 +2458,7 @@ console.log('LoveF8 spark check', {
 <button
   type="button"
   onClick={() => router.push('/connect')}
-  className="inline-flex shrink-0 items-center justify-center rounded-xl border border-sky-200 bg-sky-50/90 px-3 py-2 text-sm font-semibold text-sky-900 shadow-sm transition hover:bg-sky-100"
+      className="inline-flex shrink-0 items-center justify-center rounded-lg border border-sky-200 bg-sky-50/90 px-2.5 py-1.5 text-xs font-semibold text-sky-900 shadow-sm transition hover:bg-sky-100 lg:rounded-xl lg:px-3 lg:py-2 lg:text-sm"
 >
   {trSafe('Connect')}
 </button>
@@ -2466,7 +2467,7 @@ console.log('LoveF8 spark check', {
   <button
     type="button"
     onClick={() => router.push('/guide')}
-    className="inline-flex shrink-0 items-center justify-center rounded-xl border border-blue-200 bg-blue-50 px-3 py-2 text-sm font-semibold text-blue-900 shadow-sm transition hover:bg-blue-100"
+        className="inline-flex shrink-0 items-center justify-center rounded-lg border border-blue-200 bg-blue-50 px-2.5 py-1.5 text-xs font-semibold text-blue-900 shadow-sm transition hover:bg-blue-100 lg:rounded-xl lg:px-3 lg:py-2 lg:text-sm"
   >
     {trSafe('Talk to Guide')}
   </button>
@@ -2476,7 +2477,7 @@ console.log('LoveF8 spark check', {
   <button
     type="button"
     onClick={() => router.push('/wallet')}
-    className="inline-flex shrink-0 items-center justify-center rounded-xl border border-amber-200 bg-amber-50/90 px-3 py-2 text-sm font-semibold text-amber-900 shadow-sm transition hover:bg-amber-100"
+        className="inline-flex shrink-0 items-center justify-center rounded-lg border border-amber-200 bg-amber-50/90 px-2.5 py-1.5 text-xs font-semibold text-amber-900 shadow-sm transition hover:bg-amber-100 lg:rounded-xl lg:px-3 lg:py-2 lg:text-sm"
   >
     {trSafe('Wallet')}
   </button>
@@ -2486,7 +2487,7 @@ console.log('LoveF8 spark check', {
   <button
     type="button"
     onClick={() => router.push('/host')}
-    className="inline-flex shrink-0 items-center justify-center rounded-xl border border-emerald-200 bg-emerald-50/90 px-3 py-2 text-sm font-semibold text-emerald-900 shadow-sm transition hover:bg-emerald-100"
+        className="inline-flex shrink-0 items-center justify-center rounded-lg border border-emerald-200 bg-emerald-50/90 px-2.5 py-1.5 text-xs font-semibold text-emerald-900 shadow-sm transition hover:bg-emerald-100 lg:rounded-xl lg:px-3 lg:py-2 lg:text-sm"
   >
     {trSafe('Host Dashboard')}
   </button>
@@ -2495,7 +2496,7 @@ console.log('LoveF8 spark check', {
 <button
   type="button"
   onClick={() => router.push('/settings')}
-  className="inline-flex shrink-0 items-center justify-center rounded-xl border border-violet-200 bg-violet-50/90 px-3 py-2 text-sm font-semibold text-violet-900 shadow-sm transition hover:bg-violet-100"
+  className="inline-flex shrink-0 items-center justify-center rounded-lg border border-violet-200 bg-violet-50/90 px-2.5 py-1.5 text-xs font-semibold text-violet-900 shadow-sm transition hover:bg-violet-100 lg:rounded-xl lg:px-3 lg:py-2 lg:text-sm"
 >
   {trSafe('Settings')}
 </button>
@@ -2503,7 +2504,7 @@ console.log('LoveF8 spark check', {
 <button
   type="button"
   onClick={() => router.push('/support/report')}
-  className="flex items-center rounded-xl border border-red-200 bg-red-50 px-4 py-2 text-sm font-medium text-red-900 shadow-sm transition hover:bg-red-100 whitespace-nowrap"
+  className="flex shrink-0 items-center rounded-lg border border-red-200 bg-red-50 px-2.5 py-1.5 text-xs font-medium text-red-900 shadow-sm transition hover:bg-red-100 whitespace-nowrap lg:rounded-xl lg:px-4 lg:py-2 lg:text-sm"
 >
   {trSafe('Report Issue')}
 </button>
@@ -2511,21 +2512,37 @@ console.log('LoveF8 spark check', {
 <button
   type="button"
   onClick={signOut}
-  className="inline-flex shrink-0 items-center justify-center rounded-xl border border-rose-200 bg-rose-50/90 px-3 py-2 text-sm font-semibold text-rose-900 shadow-sm transition hover:bg-rose-100"
+  className="inline-flex shrink-0 items-center justify-center rounded-lg border border-rose-200 bg-rose-50/90 px-2.5 py-1.5 text-xs font-semibold text-rose-900 shadow-sm transition hover:bg-rose-100 lg:rounded-xl lg:px-3 lg:py-2 lg:text-sm"
 >
   {trSafe('Sign out')}
 </button>
               </div>
             </div>
 
-            {newMessageBanner && (
-              <button
-                type="button"
-                onClick={() => void openConversation(newMessageBanner.cid)}
-                className="rounded-2xl border border-sky-200 bg-sky-50/90 px-4 py-2.5 text-left text-sm font-semibold text-sky-900 shadow-sm transition hover:bg-sky-100"
-              >
-                New message from {newMessageBanner.name}
-              </button>
+                        {newMessageBanner && (
+              <div className="flex items-center gap-2 rounded-xl border border-sky-200 bg-sky-50/90 px-2.5 py-1.5 text-xs font-semibold text-sky-900 shadow-sm">
+                <button
+                  type="button"
+                  onClick={() => void openConversation(newMessageBanner.cid)}
+                  className="min-w-0 flex-1 truncate text-left"
+                >
+                  New message from {newMessageBanner.name}
+                </button>
+
+                <button
+                  type="button"
+                  onClick={() =>
+                    setDismissedNewMessageBannerByConvo((prev) => ({
+                      ...prev,
+                      [newMessageBanner.cid]: true,
+                    }))
+                  }
+                  className="inline-flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-white/80 text-sm font-black text-sky-900 transition hover:bg-white"
+                  aria-label="Dismiss new message alert"
+                >
+                  ×
+                </button>
+              </div>
             )}
 
             {sparkWarning && (
