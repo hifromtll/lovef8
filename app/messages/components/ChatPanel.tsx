@@ -577,22 +577,47 @@ useEffect(() => {
   const loadTranslationSetting = async () => {
     setDebugLoadedUserId(userId);
 
+    // If both people share a selected language, do not auto-translate this chat.
+    if (hasLanguageOverlap) {
+      setAutoTranslate(false);
+      return;
+    }
+
     const { data, error } = await supabase
       .from('conversation_translation_settings')
       .select('enabled, user_id')
       .eq('conversation_id', activeConversationId);
 
     if (error) {
-      setAutoTranslate(false);
+      setAutoTranslate(true);
       return;
     }
 
     const row = (data || []).find((r) => String(r.user_id) === String(userId));
-    setAutoTranslate(row?.enabled === true);
+
+    // If the user already changed this conversation setting, respect it.
+    if (row) {
+      setAutoTranslate(row.enabled === true);
+      return;
+    }
+
+    // Default ON only when the selected languages are different.
+    setAutoTranslate(true);
+
+    await supabase.from('conversation_translation_settings').upsert(
+      {
+        conversation_id: activeConversationId,
+        user_id: userId,
+        enabled: true,
+      },
+      {
+        onConflict: 'conversation_id,user_id',
+      }
+    );
   };
 
   void loadTranslationSetting();
-}, [activeConversationId, userId]);
+}, [activeConversationId, hasLanguageOverlap, userId]);
   const [showJumpToLatest, setShowJumpToLatest] = useState(false);
   const [sparkOverlay, setSparkOverlay] = useState<SparkBurstOverlay | null>(null);
   const [emojiOpen, setEmojiOpen] = useState(false);
@@ -1376,43 +1401,44 @@ useEffect(() => {
           </div>
         )}
 {!hasLanguageOverlap && (
-  <div className="border-b border-blue-200 bg-blue-50 px-3 py-2 text-xs text-blue-900">
-    You and this person may speak different languages.
-    <button
-      type="button"
-      className="ml-2 font-bold underline"
-      onClick={async () => {
-        if (!activeConversationId || !userId) return;
+  <div className="border-b border-blue-100 bg-blue-50/80 px-3 py-1.5 text-[11px] text-blue-900">
+    <div className="mx-auto flex w-full max-w-3xl items-center justify-between gap-2">
+      <span className="truncate font-medium">
+        Auto-translation {autoTranslate ? 'ON' : 'OFF'}
+      </span>
 
-        const newValue = !autoTranslate;
+      <button
+        type="button"
+        className="shrink-0 rounded-full bg-white/80 px-2.5 py-1 text-[11px] font-bold text-blue-900 underline"
+        onClick={async () => {
+          if (!activeConversationId || !userId) return;
 
-        const { error } = await supabase
-          .from('conversation_translation_settings')
-          .upsert(
-            {
-              conversation_id: activeConversationId,
-              user_id: userId,
-              enabled: newValue,
-            },
-            {
-              onConflict: 'conversation_id,user_id',
-            }
-          );
+          const newValue = !autoTranslate;
 
-        if (error) {
-          alert(error.message);
-          return;
-        }
+          const { error } = await supabase
+            .from('conversation_translation_settings')
+            .upsert(
+              {
+                conversation_id: activeConversationId,
+                user_id: userId,
+                enabled: newValue,
+              },
+              {
+                onConflict: 'conversation_id,user_id',
+              }
+            );
 
-        setAutoTranslate(newValue);
-      }}
-    >
-      {autoTranslate ? 'Turn OFF auto-translation' : 'Turn ON auto-translation'}
-    </button>
+          if (error) {
+            alert(error.message);
+            return;
+          }
 
-    <span className="ml-2 font-semibold">
-      {autoTranslate ? 'ON' : 'OFF'}
-    </span>
+          setAutoTranslate(newValue);
+        }}
+      >
+        {autoTranslate ? 'Turn off' : 'Turn on'}
+      </button>
+    </div>
   </div>
 )}
         <div
