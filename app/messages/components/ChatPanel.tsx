@@ -1345,8 +1345,8 @@ useEffect(() => {
                     )}
                   </div>
 
-                                    {canReceiveSparks && (
-                    <div className="hidden w-full sm:block">
+                                       {canReceiveSparks && (
+                    <div className="w-full max-w-[210px] scale-[0.82] origin-top-right sm:max-w-none sm:scale-100">
                       <ChatHeaderActions
                         otherProfile={{
                           display_name: chatTitle,
