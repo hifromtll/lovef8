@@ -1345,8 +1345,8 @@ useEffect(() => {
                     )}
                   </div>
 
-                                       {canReceiveSparks && (
-                    <div className="w-full max-w-[210px] scale-[0.82] origin-top-right sm:max-w-none sm:scale-100">
+                                     {canReceiveSparks && (
+                    <div className="hidden sm:block sm:w-full">
                       <ChatHeaderActions
                         otherProfile={{
                           display_name: chatTitle,
@@ -1817,8 +1817,31 @@ useEffect(() => {
   />
 
     <div className="space-y-2">
-                                {canReceiveSparks && remainingSparkLimit !== null && activeOther?.username && (
-                  <div className="truncate pl-1 text-[11px] font-medium text-neutral-500">
+                                 {canReceiveSparks && (
+                  <div className="mb-1 flex items-center justify-between gap-2 rounded-xl border border-amber-200 bg-amber-50/80 px-2.5 py-1.5 sm:hidden">
+                    <div className="min-w-0">
+                      <div className="truncate text-[11px] font-semibold text-amber-950">
+                        {remainingSparkLimit !== null
+                          ? remainingSparkLimit > 0
+                            ? `${remainingSparkLimit} sparks left today`
+                            : 'Daily spark limit reached'
+                          : 'Send Sparks'}
+                      </div>
+                    </div>
+
+                    <button
+                      type="button"
+                      onClick={() => void onSendSpark(10)}
+                      disabled={sendingSpark || isBlockedWithActive || remainingSparkLimit === 0}
+                      className="inline-flex h-8 shrink-0 items-center justify-center rounded-full border border-amber-300 bg-white px-3 text-[12px] font-bold text-amber-900 shadow-sm transition hover:bg-amber-100 disabled:cursor-not-allowed disabled:opacity-50"
+                    >
+                      ✨ Send Sparks
+                    </button>
+                  </div>
+                )}
+
+                {canReceiveSparks && remainingSparkLimit !== null && activeOther?.username && (
+                  <div className="hidden truncate pl-1 text-[11px] font-medium text-neutral-500 sm:block">
                     {remainingSparkLimit > 0
                       ? `${remainingSparkLimit} sparks left today`
                       : `Daily spark limit reached`}
