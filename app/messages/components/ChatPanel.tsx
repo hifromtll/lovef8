@@ -1816,12 +1816,12 @@ useEffect(() => {
     }
   />
 
-  <div className="flex items-end gap-3">
-                {remainingSparkLimit !== null && activeOther?.username && (
-                  <div className="mb-3 pl-1 text-xs text-neutral-500">
+    <div className="space-y-2">
+                                {canReceiveSparks && remainingSparkLimit !== null && activeOther?.username && (
+                  <div className="truncate pl-1 text-[11px] font-medium text-neutral-500">
                     {remainingSparkLimit > 0
-                      ? `You can send ${remainingSparkLimit} more sparks to ${activeOther.username} today`
-                      : `You've reached your daily limit with ${activeOther.username}`}
+                      ? `${remainingSparkLimit} sparks left today`
+                      : `Daily spark limit reached`}
                   </div>
                 )}
 {selectedMediaFile && selectedMediaPreviewUrl && selectedMediaKind && (
@@ -1864,13 +1864,13 @@ useEffect(() => {
   </div>
 )}
 
-<div className="flex items-end gap-2">
+<div className="flex min-w-0 items-end gap-1.5 sm:gap-2">
   <button
     ref={emojiButtonRef}
     type="button"
     onClick={() => setEmojiOpen((prev) => !prev)}
     disabled={isBlockedWithActive || sending}
-    className="inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl border border-neutral-300 bg-white text-xl transition hover:bg-neutral-50 disabled:cursor-not-allowed disabled:opacity-50"
+    className="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border border-neutral-300 bg-white text-lg transition hover:bg-neutral-50 disabled:cursor-not-allowed disabled:opacity-50"
     aria-label="Open emoji picker"
   >
     😊
@@ -1891,7 +1891,7 @@ useEffect(() => {
     fileInputRef.current?.click();
   }}
   disabled={isBlockedWithActive || sending}
-  className={`inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl border text-xl transition ${
+  className={`inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border text-lg transition ${
     ['basic', 'plus', 'premium'].includes(
       String(membershipTier || '').toLowerCase().trim()
     )
@@ -1919,7 +1919,7 @@ useEffect(() => {
     placeholder={isBlockedWithActive ? 'Blocked' : 'Type a message…'}
     disabled={isBlockedWithActive || sending}
     rows={1}
-    className="min-h-[46px] max-h-[180px] flex-1 resize-none rounded-2xl border border-neutral-300 bg-white px-4 py-3 text-[15px] leading-5 outline-none transition focus:border-sky-400 focus:ring-2 focus:ring-sky-100 disabled:bg-neutral-100"
+    className="min-h-[42px] max-h-[150px] min-w-0 flex-1 resize-none rounded-xl border border-neutral-300 bg-white px-3 py-2.5 text-[15px] leading-5 outline-none transition focus:border-sky-400 focus:ring-2 focus:ring-sky-100 disabled:bg-neutral-100"
     onKeyDown={(e) => {
       if (e.key === 'Escape') {
         setEmojiOpen(false);
@@ -1938,6 +1938,7 @@ useEffect(() => {
     onClick={() => void handleSendAndRefocus()}
     disabled={sending || isBlockedWithActive || sendLocked}
     className="inline-flex h-11 shrink-0 items-center justify-center rounded-2xl bg-slate-900 px-4 text-sm font-semibold text-white transition hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-50"
+    
   >
     {sending ? 'Sending…' : 'Send'}
   </button>
