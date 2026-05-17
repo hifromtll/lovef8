@@ -18,7 +18,15 @@ type WantsKidsOption = 'Yes' | 'No' | 'Maybe' | 'Undecided';
 type SimpleChoice3 = 'Yes' | 'Socially' | 'No';
 type ExerciseChoice = 'Often' | 'Sometimes' | 'Rarely';
 type MorningNightChoice = 'Morning' | 'Night' | 'Both';
-
+type BodyTypeOption =
+  | 'Prefer not to say'
+  | 'Slim'
+  | 'Athletic'
+  | 'Average'
+  | 'Curvy'
+  | 'Plus-size'
+  | 'Muscular';
+  
 type HostApplicationStatus =
   | 'not_applied'
   | 'in_progress'
@@ -75,6 +83,26 @@ const DRINK_OPTIONS: SimpleChoice3[] = ['Yes', 'Socially', 'No'];
 const SMOKE_OPTIONS: SimpleChoice3[] = ['Yes', 'Socially', 'No'];
 const EXERCISE_OPTIONS: ExerciseChoice[] = ['Often', 'Sometimes', 'Rarely'];
 const MORNING_NIGHT_OPTIONS: MorningNightChoice[] = ['Morning', 'Night', 'Both'];
+const BODY_TYPE_OPTIONS: BodyTypeOption[] = [
+  'Prefer not to say',
+  'Slim',
+  'Athletic',
+  'Average',
+  'Curvy',
+  'Plus-size',
+  'Muscular',
+];
+
+const HEIGHT_OPTIONS = Array.from({ length: 49 }, (_, index) => {
+  const inches = 48 + index;
+  const feet = Math.floor(inches / 12);
+  const remainingInches = inches % 12;
+
+  return {
+    value: inches,
+    label: `${feet}'${remainingInches}"`,
+  };
+});
 
 const LANGUAGE_OPTIONS = [
   'English',
@@ -254,7 +282,11 @@ const STATIC_UI_TEXTS = [
 
   'Hero',
   'This is the fast first impression people get right away.',
-  'Age',
+    'Age',
+  'Height',
+  'Select height',
+  'Body type',
+  'Select body type',
   'Gender',
   'Select gender',
   'Interested in',
@@ -386,7 +418,7 @@ const STATIC_UI_TEXTS = [
   'Become a Host',
 
   'Profile updated.',
-  'Please enter a valid age between 18 and 120.',
+  'Please enter a valid age between 19 and 95.',
 ];
 
 function extractStoragePath(value: string | null): string | null {
@@ -584,7 +616,9 @@ export default function SettingsPage() {
   const [translatedMapGuidance, setTranslatedMapGuidance] = useState<Record<string, string>>({});
 
 
-  const [age, setAge] = useState('');
+    const [age, setAge] = useState('');
+  const [heightInches, setHeightInches] = useState('');
+  const [bodyType, setBodyType] = useState('');
   const [gender, setGender] = useState('');
   const [interestedIn, setInterestedIn] = useState<string[]>([]);
   const [relationshipGoal, setRelationshipGoal] = useState('');
@@ -720,6 +754,8 @@ export default function SettingsPage() {
           normally_online_end,
           languages_spoken,
           age,
+          height_inches,
+          body_type,
           gender,
           interested_in,
           relationship_goal,
@@ -793,6 +829,8 @@ export default function SettingsPage() {
       setTargetLanguage(langs[0] || 'English');
 
       setAge(data?.age != null ? String(data.age) : '');
+      setHeightInches(data?.height_inches != null ? String(data.height_inches) : '');
+      setBodyType(data?.body_type ?? '');
       setGender(data?.gender ?? '');
       setInterestedIn(asTextArray(data?.interested_in));
       setRelationshipGoal(data?.relationship_goal ?? '');
@@ -1020,7 +1058,11 @@ useEffect(() => {
     [
       'Hero',
       'This is the fast first impression people get right away.',
-      'Age',
+            'Age',
+      'Height',
+      'Select height',
+      'Body type',
+      'Select body type',
       'Gender',
       'Select gender',
       'Interested in',
@@ -1034,10 +1076,16 @@ useEffect(() => {
       'A fast first impression shown near the top of your profile.',
       'Warm, playful chats with real connection.',
       '28',
-      'Man',
-      'Woman',
-      'Non-binary',
-      'Prefer not to say',
+        'Man',
+  'Woman',
+  'Non-binary',
+  'Prefer not to say',
+  'Slim',
+  'Athletic',
+  'Average',
+  'Curvy',
+  'Plus-size',
+  'Muscular',
       'Men',
       'Women',
       'Both',
@@ -1214,7 +1262,7 @@ useEffect(() => {
       'Saving profile...',
       'Back to Messages',
       'Profile updated.',
-      'Please enter a valid age between 18 and 120.',
+      'Please enter a valid age between 19 and 95.',
     ],
     setTranslatedMapGuidance
   );
@@ -1322,15 +1370,27 @@ useEffect(() => {
     }
 
     const parsedAge = age.trim() ? Number(age.trim()) : null;
+    const parsedHeightInches = heightInches.trim() ? Number(heightInches.trim()) : null;
 
     if (
       age.trim() &&
       (parsedAge === null ||
         !Number.isInteger(parsedAge) ||
-        parsedAge < 18 ||
+        parsedAge < 19 ||
         parsedAge > 120)
     ) {
-      alert(tr('Please enter a valid age between 18 and 120.'));
+      alert(tr('Please enter a valid age between 19 and 120.'));
+      setSavingProfile(false);
+      return;
+    }
+        if (
+      heightInches.trim() &&
+      (parsedHeightInches === null ||
+        !Number.isInteger(parsedHeightInches) ||
+        parsedHeightInches < 48 ||
+        parsedHeightInches > 96)
+    ) {
+      alert('Please select a valid height.');
       setSavingProfile(false);
       return;
     }
@@ -1353,6 +1413,8 @@ useEffect(() => {
       languages_spoken: languagesSpoken,
 
       age: parsedAge,
+      height_inches: parsedHeightInches,
+      body_type: bodyType || null,
       gender: gender || null,
       interested_in: interestedIn.length > 0 ? interestedIn : [],
       relationship_goal: relationshipGoal || null,
@@ -1696,18 +1758,54 @@ useEffect(() => {
             title={tr('Hero')}
             description={tr('This is the fast first impression people get right away.')}
           >
-            <div className="grid gap-4 sm:grid-cols-2 sm:gap-5">
+                        <div className="grid gap-4 sm:grid-cols-2 sm:gap-5">
               <div>
                 <label className="block text-sm font-semibold text-neutral-900">{tr('Age')}</label>
                 <input
                   type="number"
-                  min="18"
-                  max="120"
+                  min="19"
+                  max="95"
                   value={age}
                   onChange={(e) => setAge(e.target.value)}
                   className="mt-2 w-full rounded-2xl border border-neutral-300 bg-white px-4 py-2.5 text-sm outline-none transition focus:border-neutral-500 sm:py-3"
                   placeholder={tr('28')}
                 />
+              </div>
+
+              <div>
+                <label className="block text-sm font-semibold text-neutral-900">
+                  {tr('Height')}
+                </label>
+                <select
+                  value={heightInches}
+                  onChange={(e) => setHeightInches(e.target.value)}
+                  className="mt-2 w-full rounded-2xl border border-neutral-300 bg-white px-4 py-2.5 text-sm outline-none transition focus:border-neutral-500 sm:py-3"
+                >
+                  <option value="">{tr('Select height')}</option>
+                  {HEIGHT_OPTIONS.map((option) => (
+                    <option key={option.value} value={option.value}>
+                      {option.label}
+                    </option>
+                  ))}
+                </select>
+              </div>
+
+              <div>
+                <label className="block text-sm font-semibold text-neutral-900">
+                  {tr('Body type')}
+                </label>
+                <select
+                  value={bodyType}
+                  onChange={(e) => setBodyType(e.target.value)}
+                  className="mt-2 w-full rounded-2xl border border-neutral-300 bg-white px-4 py-2.5 text-sm outline-none transition focus:border-neutral-500 sm:py-3"
+                >
+                  <option value="">{tr('Select body type')}</option>
+                  {BODY_TYPE_OPTIONS.map((option) => (
+                    <option key={option} value={option}>
+                      {tr(option)}
+                    </option>
+                  ))}
+                </select>
               </div>
 
               <div>
