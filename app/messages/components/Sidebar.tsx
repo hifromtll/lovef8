@@ -29,6 +29,9 @@ type SidebarProps = {
   lastByConvo: Record<string, LastMsg>;
   unreadByConvo: Record<string, boolean>;
   onlineProfileIds?: Set<string>;
+  likedProfileIds?: Set<string>;
+  matchedProfileIds?: Set<string>;
+  onToggleProfileLike?: (profileId: string) => void | Promise<void>;
   isDesktop: boolean;
   showHostsSection: boolean;
   showUsersSection: boolean;
@@ -454,6 +457,9 @@ function ProfileCard({
   threeWords,
   peopleNotice,
   talkTopics,
+  likedByMe,
+  isMatch,
+  onToggleLike,
   onPreview,
   onOpenChat,
 }: {
@@ -481,6 +487,9 @@ function ProfileCard({
   threeWords?: string | null;
   peopleNotice?: string | null;
   talkTopics?: string | null;
+  likedByMe?: boolean;
+  isMatch?: boolean;
+  onToggleLike?: (profileId: string) => void | Promise<void>;
   onPreview: (profile: ProfilePreviewData) => void;
   onOpenChat: (profileId: string) => void | Promise<void>;
 }) {
@@ -622,7 +631,7 @@ function ProfileCard({
             </div>
           )}
 
-          <div className="mt-2">
+                    <div className="mt-2 flex flex-wrap gap-2">
             <button
               type="button"
               onClick={() => void onOpenChat(id)}
@@ -630,6 +639,27 @@ function ProfileCard({
             >
               Open chat
             </button>
+
+            {onToggleLike && (
+              <button
+                type="button"
+                onClick={() => void onToggleLike(id)}
+                className={[
+                  'rounded-lg border px-3 py-1.5 text-xs font-semibold shadow-sm transition',
+                  likedByMe
+                    ? 'border-pink-200 bg-pink-50 text-pink-700 hover:bg-pink-100'
+                    : 'border-neutral-300 bg-white text-neutral-800 hover:bg-pink-50',
+                ].join(' ')}
+              >
+                {likedByMe ? '♥ Liked' : '♡ Like'}
+              </button>
+            )}
+
+            {isMatch && (
+              <span className="inline-flex items-center rounded-lg border border-pink-100 bg-pink-50 px-3 py-1.5 text-xs font-bold text-pink-700">
+                Match 💖
+              </span>
+            )}
           </div>
         </div>
       </div>
@@ -654,6 +684,9 @@ export default function Sidebar({
   lastByConvo,
   unreadByConvo,
   onlineProfileIds = new Set(),
+  likedProfileIds = new Set(),
+  matchedProfileIds = new Set(),
+  onToggleProfileLike,
   isDesktop,
   showHostsSection,
   showUsersSection,
@@ -767,6 +800,9 @@ export default function Sidebar({
                   threeWords={h.three_words ?? null}
                   peopleNotice={h.people_notice ?? null}
                   talkTopics={h.talk_topics ?? null}
+                  likedByMe={likedProfileIds.has(h.id)}
+                  isMatch={matchedProfileIds.has(h.id)}
+                  onToggleLike={onToggleProfileLike}
                   onPreview={onOpenProfilePreview}
                   onOpenChat={onOpenProfile}
                 />
@@ -836,6 +872,9 @@ export default function Sidebar({
                   threeWords={u.three_words ?? null}
                   peopleNotice={u.people_notice ?? null}
                   talkTopics={u.talk_topics ?? null}
+                  likedByMe={likedProfileIds.has(u.id)}
+                  isMatch={matchedProfileIds.has(u.id)}
+                  onToggleLike={onToggleProfileLike}
                   onPreview={onOpenProfilePreview}
                   onOpenChat={onOpenProfile}
                 />

@@ -10,6 +10,9 @@ type ProfilePreviewModalProps = {
   profile: ProfilePreviewData | null;
   viewerTimezone?: string | null;
   targetLanguage?: string | null;
+  likedByMe?: boolean;
+  isMatch?: boolean;
+  onToggleLike?: (profileId: string) => void | Promise<void>;
 };
 
 type UiLabels = {
@@ -412,6 +415,9 @@ export default function ProfilePreviewModal({
   profile,
   viewerTimezone = null,
   targetLanguage = null,
+  likedByMe = false,
+  isMatch = false,
+  onToggleLike,
 }: ProfilePreviewModalProps) {
   const [selectedPhotoIndex, setSelectedPhotoIndex] = useState(0);
   const [translated, setTranslated] = useState<Record<string, string>>({});
@@ -959,6 +965,29 @@ export default function ProfilePreviewModal({
             <div className="min-w-0">
               <div className="text-4xl font-semibold text-white">{username}</div>
               <div className="mt-1 text-sm text-zinc-400">{roleLine}</div>
+
+              {onToggleLike && (
+                <div className="mt-4 flex flex-wrap items-center gap-2">
+                  <button
+                    type="button"
+                    onClick={() => void onToggleLike(profile.id)}
+                    className={[
+                      'rounded-xl border px-4 py-2 text-sm font-bold shadow-sm transition',
+                      likedByMe
+                        ? 'border-pink-300 bg-pink-500/15 text-pink-200 hover:bg-pink-500/25'
+                        : 'border-white/15 bg-white/5 text-zinc-100 hover:bg-pink-500/15 hover:text-pink-100',
+                    ].join(' ')}
+                  >
+                    {likedByMe ? '♥ Liked' : '♡ Like'}
+                  </button>
+
+                  {isMatch && (
+                    <span className="inline-flex items-center rounded-xl border border-pink-300/30 bg-pink-500/15 px-4 py-2 text-sm font-bold text-pink-200">
+                      Match 💖
+                    </span>
+                  )}
+                </div>
+              )}
 
               {headline && (
                 <div className="mt-4 text-lg font-medium leading-7 text-zinc-100">

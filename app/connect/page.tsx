@@ -4,6 +4,11 @@ import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { supabase } from '@/lib/supabaseClient';
 import { touchLastLogin } from '@/lib/touchLastLogin';
+import {
+  getProfileLikeStatus,
+  likeProfile,
+  unlikeProfile,
+} from '@/lib/profileLikes';
 import Sidebar from '../messages/components/Sidebar';
 import ChatPanel from '../messages/components/ChatPanel';
 import { Suspense } from 'react';
@@ -365,6 +370,8 @@ function ConnectPageContent() {
   const [isDesktop, setIsDesktop] = useState(false);
   const [profilePreviewOpen, setProfilePreviewOpen] = useState(false);
   const [profilePreview, setProfilePreview] = useState<ProfilePreviewData | null>(null);
+  const [likedProfileIds, setLikedProfileIds] = useState<Set<string>>(new Set());
+const [matchedProfileIds, setMatchedProfileIds] = useState<Set<string>>(new Set());
   const [targetLanguage, setTargetLanguage] = useState<string>('English');
 const [translatedTopNavMap, setTranslatedTopNavMap] = useState<Record<string, string>>({});
 const [forceEnglish, setForceEnglish] = useState(false);
@@ -398,6 +405,7 @@ useEffect(() => {
       'LoveF8 Connect',
       'Discover people worth talking to',
       'Talk to Guide',
+      'Likes',
       'Messages',
       'Wallet',
       'Membership',
@@ -1247,29 +1255,33 @@ setHostsLoading(false);
     [countryFilter, parsedMaxAge, parsedMinAge, sortAge]
   );
 
-  const filteredHosts = useMemo(() => {
-    return applyDiscoveryFilters(hosts);
-  }, [applyDiscoveryFilters, hosts]);
+    const filteredHosts = useMemo(() => {
+    return applyDiscoveryFilters(hosts).filter(
+      (host) => !blockedOtherIds.has(host.id)
+    );
+  }, [applyDiscoveryFilters, blockedOtherIds, hosts]);
 
-    const filteredUsers = useMemo(() => {
-    const next = applyDiscoveryFilters(users);
+     const filteredUsers = useMemo(() => {
+    const next = applyDiscoveryFilters(users).filter(
+      (user) => !blockedOtherIds.has(user.id)
+    );
 
-   next.sort((a, b) => {
-  const aOnline = presenceByProfile[a.id]?.is_online ? 1 : 0;
-  const bOnline = presenceByProfile[b.id]?.is_online ? 1 : 0;
+    next.sort((a, b) => {
+      const aOnline = presenceByProfile[a.id]?.is_online ? 1 : 0;
+      const bOnline = presenceByProfile[b.id]?.is_online ? 1 : 0;
 
-  if (aOnline !== bOnline) {
-    return bOnline - aOnline;
-  }
+      if (aOnline !== bOnline) {
+        return bOnline - aOnline;
+      }
 
-  const aCreated = a.created_at ? new Date(a.created_at).getTime() : 0;
-  const bCreated = b.created_at ? new Date(b.created_at).getTime() : 0;
+      const aCreated = a.created_at ? new Date(a.created_at).getTime() : 0;
+      const bCreated = b.created_at ? new Date(b.created_at).getTime() : 0;
 
-  return bCreated - aCreated;
-});
+      return bCreated - aCreated;
+    });
 
     return next;
-  }, [applyDiscoveryFilters, presenceByProfile, users]);
+  }, [applyDiscoveryFilters, blockedOtherIds, presenceByProfile, users]);
 
   const hasActiveFilters = useMemo(() => {
     return countryFilter !== '' || minAge !== '19' || maxAge !== '' || sortAge !== 'default';
@@ -1281,6 +1293,104 @@ setHostsLoading(false);
     setMaxAge('');
     setSortAge('default');
   }, []);
+
+  const refreshProfileLikeStatus = useCallback(
+  async (otherProfileId: string) => {
+    if (!userId || !otherProfileId || userId === otherProfileId) return;
+
+    const status = await getProfileLikeStatus(supabase, userId, otherProfileId);
+
+    setLikedProfileIds((prev) => {
+      const next = new Set(prev);
+
+      if (status.likedByMe) {
+        next.add(otherProfileId);
+      } else {
+        next.delete(otherProfileId);
+      }
+
+      return next;
+    });
+
+    setMatchedProfileIds((prev) => {
+      const next = new Set(prev);
+
+      if (status.isMatch) {
+        next.add(otherProfileId);
+      } else {
+        next.delete(otherProfileId);
+      }
+
+      return next;
+    });
+  },
+  [userId]
+);
+
+const toggleProfileLike = useCallback(
+  async (otherProfileId: string) => {
+    if (!userId || !otherProfileId || userId === otherProfileId) return;
+
+    const currentlyLiked = likedProfileIds.has(otherProfileId);
+
+    if (currentlyLiked) {
+      const result = await unlikeProfile(supabase, userId, otherProfileId);
+
+      if (!result.ok) {
+        alert('Could not remove like. Please try again.');
+        return;
+      }
+
+      setLikedProfileIds((prev) => {
+        const next = new Set(prev);
+        next.delete(otherProfileId);
+        return next;
+      });
+
+      setMatchedProfileIds((prev) => {
+        const next = new Set(prev);
+        next.delete(otherProfileId);
+        return next;
+      });
+
+      return;
+    }
+
+    const result = await likeProfile(supabase, userId, otherProfileId);
+
+    if (!result.ok) {
+      alert('Could not like this profile. Please try again.');
+      return;
+    }
+
+    setLikedProfileIds((prev) => {
+      const next = new Set(prev);
+      next.add(otherProfileId);
+      return next;
+    });
+
+    setMatchedProfileIds((prev) => {
+      const next = new Set(prev);
+
+      if (result.isMatch) {
+        next.add(otherProfileId);
+      }
+
+      return next;
+    });
+  },
+  [likedProfileIds, userId]
+);
+
+  useEffect(() => {
+    if (!userId) return;
+
+    const visibleProfiles = [...filteredHosts, ...filteredUsers];
+
+    visibleProfiles.forEach((profile) => {
+      void refreshProfileLikeStatus(profile.id);
+    });
+  }, [filteredHosts, filteredUsers, refreshProfileLikeStatus, userId]);
 
   const openConversation = useCallback(
     async (conversationId: string) => {
@@ -2279,14 +2389,12 @@ setLoading(false);
     </button>
   )}
 
-  {!isApprovedHostMe && (
-    <button
-      onClick={() => router.push('/guide')}
-      className="rounded-xl border border-blue-200 bg-blue-50 px-4 py-2.5 text-sm font-bold text-blue-900 shadow-sm transition hover:bg-blue-100"
-    >
-      {trSafe('Talk to Guide')}
-    </button>
-  )}
+      <button
+    onClick={() => router.push('/likes')}
+    className="inline-flex items-center justify-center rounded-xl border border-pink-200 bg-pink-50/90 px-3 py-2 text-xs font-bold text-pink-900 shadow-sm transition hover:bg-pink-100"
+  >
+    ♡ {trSafe('Likes')}
+  </button>
 
   <button
     onClick={() => router.push('/messages')}
@@ -2320,12 +2428,21 @@ setLoading(false);
     </button>
   )}
 
-  <button
+    <button
     onClick={() => router.push('/settings')}
     className="inline-flex items-center justify-center rounded-xl border border-fuchsia-100 bg-white/90 px-3 py-2 text-xs font-bold text-neutral-900 shadow-sm transition hover:bg-fuchsia-50"
   >
     {trSafe('Settings')}
   </button>
+
+  {!isApprovedHostMe && (
+    <button
+      onClick={() => router.push('/guide')}
+      className="inline-flex items-center justify-center rounded-xl border border-blue-200 bg-blue-50/90 px-3 py-2 text-xs font-bold text-blue-900 shadow-sm transition hover:bg-blue-100"
+    >
+      {trSafe('Talk to Guide')}
+    </button>
+  )}
 
   <button
     onClick={signOut}
@@ -2435,6 +2552,9 @@ setLoading(false);
                 lastByConvo={lastByConvo}
                 unreadByConvo={unreadByConvo}
                 onlineProfileIds={onlineProfileIds}
+                likedProfileIds={likedProfileIds}
+                matchedProfileIds={matchedProfileIds}
+                onToggleProfileLike={toggleProfileLike}
                 isDesktop={isDesktop}
                 showHostsSection={showHostsSection}
                 showUsersSection={showUsersSection}
@@ -2521,10 +2641,15 @@ setLoading(false);
         </div>
       </div>
 
-      <ProfilePreviewModal
+            <ProfilePreviewModal
         open={profilePreviewOpen}
         onClose={closeProfilePreview}
         profile={profilePreview}
+        viewerTimezone={viewerTimezone}
+        targetLanguage={targetLanguage}
+        likedByMe={profilePreview ? likedProfileIds.has(profilePreview.id) : false}
+        isMatch={profilePreview ? matchedProfileIds.has(profilePreview.id) : false}
+        onToggleLike={toggleProfileLike}
       />
     </main>
   );
