@@ -3,7 +3,6 @@
 import { useEffect, useMemo, useState } from 'react';
 import { supabase } from '@/lib/supabaseClient';
 import { useRouter } from 'next/navigation';
-import { formatMoneyFromCountry } from '@/lib/currency';
 
 const UI_STRINGS = [
   'Loading wallet...',
@@ -259,7 +258,7 @@ if (Array.isArray(data?.translations)) {
   }, [boosterCredits]);
 
   const totalAvailable = membershipBalance + boosterBalance;
-  const displayCountry = profile?.country_origin ?? 'United States';
+    const formatUsd = (price: number) => `$${price.toFixed(2)} USD`;
 
   if (loading) {
     return (
@@ -424,7 +423,7 @@ if (Array.isArray(data?.translations)) {
                       </div>
 
                       <div className="plan-meta">
-                        {formatMoneyFromCountry(p.price, displayCountry)} • {p.sparks}{' '}
+                        {formatUsd(p.price)} • {p.sparks}{' '}
                         {trSafe('sparks total', translated, forceEnglish)}
                       </div>
 
@@ -464,7 +463,7 @@ if (Array.isArray(data?.translations)) {
                     </div>
 
                     <div className="plan-price">
-                      {formatMoneyFromCountry(p.price, displayCountry)}
+                      {formatUsd(p.price)}
                     </div>
                   </div>
 
@@ -521,7 +520,7 @@ if (Array.isArray(data?.translations)) {
                     </div>
 
                     <div className="booster-price">
-                      {formatMoneyFromCountry(b.price, displayCountry)}
+                     {formatUsd(b.price)} 
                     </div>
                   </div>
 
