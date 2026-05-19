@@ -3,7 +3,7 @@
 import { useEffect, useMemo, useState } from 'react';
 import { supabase } from '@/lib/supabaseClient';
 import { useRouter } from 'next/navigation';
-import { formatMoneyFromCountry } from '@/lib/currency';
+
 
 type MembershipTier = 'free' | 'basic' | 'plus' | 'premium';
 
@@ -66,8 +66,9 @@ export default function MembershipPage() {
     if (!profile?.membership_tier) return null;
     return PLANS.find((p) => p.tier === profile.membership_tier) || null;
   }, [profile?.membership_tier]);
+  
+    const formatUsd = (price: number) => `$${price.toFixed(2)} USD`;
 
-  const displayCountry = profile?.country_origin ?? 'United States';
 
   useEffect(() => {
     async function load() {
@@ -376,7 +377,7 @@ export default function MembershipPage() {
                     </div>
 
                     <div className="shrink-0 text-2xl font-black text-neutral-950">
-                      {formatMoneyFromCountry(plan.price, displayCountry)}
+                      {formatUsd(plan.price)}
                     </div>
                   </div>
 
