@@ -1845,28 +1845,40 @@ useEffect(() => {
   />
 
     <div className="space-y-2">
-                                 {canReceiveSparks && (
-                  <div className="mb-1 flex items-center justify-between gap-2 rounded-xl border border-amber-200 bg-amber-50/80 px-2.5 py-1.5 sm:hidden">
-                    <div className="min-w-0">
-                      <div className="truncate text-[11px] font-semibold text-amber-950">
-                        {remainingSparkLimit !== null
-                          ? remainingSparkLimit > 0
-                            ? `${remainingSparkLimit} sparks left today`
-                            : 'Daily spark limit reached'
-                          : 'Send Sparks'}
-                      </div>
-                    </div>
+              {canReceiveSparks && (
+  <div className="mb-1 rounded-xl border border-amber-200 bg-amber-50/80 px-2.5 py-1.5 sm:hidden">
+    <div className="mb-1 truncate text-[11px] font-semibold text-amber-950">
+      {remainingSparkLimit !== null
+        ? remainingSparkLimit > 0
+          ? `${remainingSparkLimit} sparks left today`
+          : 'Daily spark limit reached'
+        : 'Send Sparks'}
+    </div>
 
-                    <button
-                      type="button"
-                      onClick={() => void onSendSpark(10)}
-                      disabled={sendingSpark || isBlockedWithActive || remainingSparkLimit === 0}
-                      className="inline-flex h-8 shrink-0 items-center justify-center rounded-full border border-amber-300 bg-white px-3 text-[12px] font-bold text-amber-900 shadow-sm transition hover:bg-amber-100 disabled:cursor-not-allowed disabled:opacity-50"
-                    >
-                      ✨ Send Sparks
-                    </button>
-                  </div>
-                )}
+    <div className="flex flex-wrap gap-1.5">
+      {[10, 20, 50, 100].map((amount) => (
+        <button
+          key={amount}
+          type="button"
+          onClick={() => void onSendSpark(amount)}
+          disabled={sendingSpark || isBlockedWithActive || remainingSparkLimit === 0}
+          className="inline-flex h-8 shrink-0 items-center justify-center rounded-full border border-amber-300 bg-white px-3 text-[12px] font-bold text-amber-900 shadow-sm transition hover:bg-amber-100 disabled:cursor-not-allowed disabled:opacity-50"
+        >
+          {amount}
+        </button>
+      ))}
+
+      <button
+        type="button"
+        onClick={() => void onSendSpark(250, 'super')}
+        disabled={sendingSpark || isBlockedWithActive || remainingSparkLimit === 0}
+        className="inline-flex h-8 shrink-0 items-center justify-center rounded-full border border-fuchsia-300 bg-white px-3 text-[12px] font-bold text-fuchsia-800 shadow-sm transition hover:bg-fuchsia-50 disabled:cursor-not-allowed disabled:opacity-50"
+      >
+        💥 Super 250
+      </button>
+    </div>
+  </div>
+)}
 
                 {canReceiveSparks && remainingSparkLimit !== null && activeOther?.username && (
                   <div className="hidden truncate pl-1 text-[11px] font-medium text-neutral-500 sm:block">
