@@ -1,4 +1,4 @@
-export const FREE_MESSAGE_COST = 3;
+export const FREE_MESSAGE_COST = 2;
 export const FREE_WEEKLY_SPARKS = 60;
 export const FREE_MAX_ACTIVE_CHATS = 3;
 export const FREE_MAX_MEMORIES = 3;
@@ -22,7 +22,15 @@ export function getMembershipTier(profile: ProfileLike | null | undefined): Memb
   if (profile.is_subscribed === true) return 'paid';
   if (profile.subscription_active === true) return 'paid';
   if (status === 'active' || status === 'paid' || status === 'premium') return 'paid';
-  if (tier === 'paid' || tier === 'premium' || tier === 'member') return 'paid';
+  if (
+  tier === 'paid' ||
+  tier === 'basic' ||
+  tier === 'plus' ||
+  tier === 'premium' ||
+  tier === 'member'
+) {
+  return 'paid';
+}
 
   return 'free';
 }

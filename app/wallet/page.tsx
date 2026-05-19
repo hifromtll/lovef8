@@ -31,6 +31,7 @@ const UI_STRINGS = [
   'Adding Sparks...',
   'View in English',
   'Use Selected Language',
+  'FREE UNLIMITED Messages',
   'Save photos to Journal',
   'Save up to 20 photos',
   'Save up to 4 videos',
@@ -432,7 +433,11 @@ if (Array.isArray(data?.translations)) {
                       </div>
 
                       <div className="plan-features">
-                        {p.key === 'basic' && (
+  <div className="plan-feature-line">
+    {trSafe('FREE UNLIMITED Messages', translated, forceEnglish)}
+  </div>
+
+  {p.key === 'basic' && (
                           <div className="plan-feature-line">
                             {trSafe('Save photos to Journal', translated, forceEnglish)}
                           </div>

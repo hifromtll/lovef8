@@ -367,13 +367,17 @@ export default function MembershipPage() {
                         )}
                       </div>
 
-                      <div className="mt-1 text-sm text-neutral-500">
-                        {plan.sparks} sparks total
-                      </div>
+                      <div className="mt-1 text-sm font-bold text-neutral-700">
+  FREE UNLIMITED Messages
+</div>
 
-                      <div className="mt-1 text-xs font-medium text-neutral-500">
-                        {plan.weeklySparks} sparks every week for 4 weeks
-                      </div>
+<div className="mt-1 text-sm text-neutral-500">
+  {plan.sparks} sparks total
+</div>
+
+<div className="mt-1 text-xs font-medium text-neutral-500">
+  {plan.weeklySparks} sparks every week for 4 weeks
+</div>
                     </div>
 
                     <div className="shrink-0 text-2xl font-black text-neutral-950">
