@@ -384,11 +384,24 @@ const [filtersOpen, setFiltersOpen] = useState(false);
   const [sortAge, setSortAge] = useState<'default' | 'youngest' | 'oldest'>('default');
 
   const isApprovedHostMe = useMemo(() => {
-    return myProfile?.role === 'host' && myProfile?.approved === true;
-  }, [myProfile]);
+  return myProfile?.role === 'host' && myProfile?.approved === true;
+}, [myProfile]);
 
-  const showHostsSection = useMemo(() => !isApprovedHostMe, [isApprovedHostMe]);
-  const showUsersSection = useMemo(() => isApprovedHostMe, [isApprovedHostMe]);
+const showGuideButton = useMemo(() => {
+  if (isApprovedHostMe) return false;
+
+  const createdAt = myProfile?.created_at;
+  if (!createdAt) return true;
+
+  const createdTime = new Date(createdAt).getTime();
+  if (Number.isNaN(createdTime)) return true;
+
+  const twentyOneDaysMs = 21 * 24 * 60 * 60 * 1000;
+  return Date.now() - createdTime <= twentyOneDaysMs;
+}, [isApprovedHostMe, myProfile?.created_at]);
+
+const showHostsSection = useMemo(() => !isApprovedHostMe, [isApprovedHostMe]);
+const showUsersSection = useMemo(() => isApprovedHostMe, [isApprovedHostMe]);
 
 useEffect(() => {
   let isActive = true;
@@ -1909,7 +1922,7 @@ router.push(`/messages?conversationId=${convoId}`);
       const { data: meProf, error: meErr } = await supabase
         .from('profiles')
         .select(
-          'role, approved, is_system_host, discoverable, chat_mode, avatar_url, short_bio, best_at, looking_for, profile_tags, location_text, country_origin, region_origin, timezone, normally_online_start, normally_online_end, languages_spoken, spark_balance'
+          'role, approved, is_system_host, discoverable, chat_mode, avatar_url, short_bio, best_at, looking_for, profile_tags, location_text, country_origin, region_origin, timezone, normally_online_start, normally_online_end, languages_spoken, spark_balance, created_at'
         )
         .eq('id', user.id)
         .single();
@@ -2435,7 +2448,7 @@ setLoading(false);
     {trSafe('Settings')}
   </button>
 
-  {!isApprovedHostMe && (
+  {showGuideButton && (
     <button
       onClick={() => router.push('/guide')}
       className="inline-flex items-center justify-center rounded-xl border border-blue-200 bg-blue-50/90 px-3 py-2 text-xs font-bold text-blue-900 shadow-sm transition hover:bg-blue-100"
