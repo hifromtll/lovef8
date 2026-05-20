@@ -309,9 +309,22 @@ const logAppEvent = useCallback(
   [userId]
 );
 
-  const isApprovedHostMe = useMemo(() => {
+   const isApprovedHostMe = useMemo(() => {
     return myProfile?.role === 'host' && myProfile?.approved === true;
   }, [myProfile]);
+
+  const showGuideButton = useMemo(() => {
+    if (isApprovedHostMe) return false;
+
+    const createdAt = myProfile?.created_at;
+    if (!createdAt) return true;
+
+    const createdTime = new Date(createdAt).getTime();
+    if (Number.isNaN(createdTime)) return true;
+
+    const twentyOneDaysMs = 21 * 24 * 60 * 60 * 1000;
+    return Date.now() - createdTime <= twentyOneDaysMs;
+  }, [isApprovedHostMe, myProfile?.created_at]);
 
   const showHostsSection = useMemo(() => !isApprovedHostMe, [isApprovedHostMe]);
   const showUsersSection = useMemo(() => isApprovedHostMe, [isApprovedHostMe]);
@@ -1975,11 +1988,11 @@ setActiveBoosterSparks(totalBooster);
 
      const { data: meProf, error: meErr } = await supabase
   .from('profiles')
-  .select(
-'role, approved, is_system_host, is_guide, discoverable, chat_mode, avatar_thumb_url, avatar_url, short_bio, best_at, looking_for, profile_tags, location_text, timezone, normally_online_start, normally_online_end, languages_spoken, spark_balance, membership_tier'
+.select(
+'role, approved, is_system_host, is_guide, discoverable, chat_mode, avatar_thumb_url, avatar_url, short_bio, best_at, looking_for, profile_tags, location_text, timezone, normally_online_start, normally_online_end, languages_spoken, spark_balance, membership_tier, created_at'
 )
-  .eq('id', user.id)
-  .single();
+.eq('id', user.id)
+.single();
 
     if (meErr) {
   console.error('my profile load error:', meErr);
@@ -2463,7 +2476,7 @@ console.log('LoveF8 spark check', {
   {trSafe('Connect')}
 </button>
 
-{!isApprovedHostMe && (
+{showGuideButton && (
   <button
     type="button"
     onClick={() => router.push('/guide')}

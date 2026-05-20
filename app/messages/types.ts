@@ -90,6 +90,7 @@ export type ProfileMini = {
 };
 
 export type MyProfile = {
+  created_at?: string | null;
   role: string | null;
   approved: boolean | null;
   is_system_host: boolean | null;
