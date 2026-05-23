@@ -925,12 +925,19 @@ async function turnOnNotifications() {
 win.OneSignalDeferred = win.OneSignalDeferred || [];
 
 await new Promise<void>((resolve, reject) => {
+  const timeout = window.setTimeout(() => {
+    reject(new Error('OneSignal did not finish loading.'));
+  }, 8000);
+
   win.OneSignalDeferred!.push(async function (OneSignal: any) {
     try {
       await OneSignal.login(userId);
       await OneSignal.Notifications.requestPermission();
+
+      window.clearTimeout(timeout);
       resolve();
     } catch (error) {
+      window.clearTimeout(timeout);
       reject(error);
     }
   });
