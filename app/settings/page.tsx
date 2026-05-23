@@ -571,6 +571,11 @@ export default function SettingsPage() {
   const [savingChatMode, setSavingChatMode] = useState(false);
   const [savingProfile, setSavingProfile] = useState(false);
 
+  const [notificationStatus, setNotificationStatus] = useState<
+  'unsupported' | 'default' | 'granted' | 'denied'
+>('default');
+const [turningOnNotifications, setTurningOnNotifications] = useState(false);
+
   const [discoverable, setDiscoverable] = useState(false);
   const [chatMode, setChatMode] = useState<ChatMode>('open_all');
   const [roleLabel, setRoleLabel] = useState<'host' | 'member'>('member');
@@ -888,6 +893,51 @@ export default function SettingsPage() {
 
     void load();
   }, [router]);
+
+  useEffect(() => {
+  if (typeof window === 'undefined' || !('Notification' in window)) {
+    setNotificationStatus('unsupported');
+    return;
+  }
+
+  setNotificationStatus(Notification.permission);
+}, []);
+
+async function turnOnNotifications() {
+  if (typeof window === 'undefined' || !('Notification' in window)) {
+    setNotificationStatus('unsupported');
+    alert('This browser does not support notifications.');
+    return;
+  }
+
+  setTurningOnNotifications(true);
+
+  try {
+    const permission = await Notification.requestPermission();
+
+    if (
+      permission === 'default' ||
+      permission === 'granted' ||
+      permission === 'denied'
+    ) {
+      setNotificationStatus(permission);
+    }
+
+    if (permission === 'granted') {
+      alert('Notifications are turned on.');
+    } else if (permission === 'denied') {
+      alert('Notifications are blocked. You can turn them back on in your browser settings.');
+    } else {
+      alert('Notifications were not turned on.');
+    }
+  } catch (error) {
+    console.error('turnOnNotifications error:', error);
+    alert('Notifications could not be turned on right now.');
+  } finally {
+    setTurningOnNotifications(false);
+  }
+}
+
 useEffect(() => {
   setTargetLanguage(settingsUiLanguageOverride || languagesSpoken[0] || 'English');
 }, [languagesSpoken, settingsUiLanguageOverride]);
@@ -1519,6 +1569,28 @@ useEffect(() => {
 >
   View in English
 </button>
+<button
+  type="button"
+  onClick={() => void turnOnNotifications()}
+  disabled={turningOnNotifications || notificationStatus === 'granted'}
+  className={[
+    'inline-flex items-center justify-center rounded-xl border px-4 py-2 text-sm font-semibold transition sm:py-2.5',
+    notificationStatus === 'granted'
+      ? 'border-green-300 bg-green-50 text-green-900'
+      : 'border-neutral-300 bg-white text-neutral-900 hover:bg-neutral-50',
+    turningOnNotifications ? 'cursor-not-allowed opacity-60' : '',
+  ].join(' ')}
+>
+  {turningOnNotifications
+    ? 'Turning on...'
+    : notificationStatus === 'granted'
+      ? 'Notifications on'
+      : notificationStatus === 'denied'
+        ? 'Notifications blocked'
+        : notificationStatus === 'unsupported'
+          ? 'Notifications unavailable'
+          : 'Turn on notifications'}
+</button>
           </div>
         </div>
 
@@ -1532,7 +1604,7 @@ useEffect(() => {
     setAvatarPath(filePath);
     setAvatarPreviewUrl(previewUrl);
   }}
-/>11
+/>
           </div>
         ) : null}
 
