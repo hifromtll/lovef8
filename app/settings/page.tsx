@@ -910,11 +910,33 @@ async function turnOnNotifications() {
     return;
   }
 
+  if (!userId) {
+    alert('Please log in before turning on notifications.');
+    return;
+  }
+
   setTurningOnNotifications(true);
 
   try {
-    const permission = await Notification.requestPermission();
+    const win = window as typeof window & {
+  OneSignalDeferred?: Array<(OneSignal: any) => Promise<void> | void>;
+};
 
+win.OneSignalDeferred = win.OneSignalDeferred || [];
+
+await new Promise<void>((resolve, reject) => {
+  win.OneSignalDeferred!.push(async function (OneSignal: any) {
+    try {
+      await OneSignal.login(userId);
+      await OneSignal.Notifications.requestPermission();
+      resolve();
+    } catch (error) {
+      reject(error);
+    }
+  });
+});
+
+const permission = Notification.permission;
     if (
       permission === 'default' ||
       permission === 'granted' ||
@@ -1572,7 +1594,7 @@ useEffect(() => {
 <button
   type="button"
   onClick={() => void turnOnNotifications()}
-  disabled={turningOnNotifications || notificationStatus === 'granted'}
+  disabled={turningOnNotifications || notificationStatus === 'unsupported'}
   className={[
     'inline-flex items-center justify-center rounded-xl border px-4 py-2 text-sm font-semibold transition sm:py-2.5',
     notificationStatus === 'granted'
