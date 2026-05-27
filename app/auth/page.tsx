@@ -153,8 +153,8 @@ export default function AuthPage() {
     setResetSending(true);
 
     const { error } = await supabase.auth.resetPasswordForEmail(clean, {
-      redirectTo: 'http://localhost:3000/auth/reset',
-    });
+  redirectTo: 'https://lovef8.com/auth/reset',
+});
 
     setResetSending(false);
 
@@ -203,40 +203,6 @@ export default function AuthPage() {
 
       <div className="auth-shell">
         <div className="auth-grid">
-          <section className="brand-panel">
-            <div className="brand-intro">
-              <div className="brand-intro-title">
-                Welcome to <span>LoveF8.com</span>
-              </div>
-              <div className="brand-intro-subtitle">
-                Where real conversations happen, with Real People.
-              </div>
-            </div>
-
-            <h1 className="brand-title" aria-label="Real conversations. Real people. No pressure.">
-  <span className="typing-line typing-line-1">Real conversations.</span>
-  <span className="typing-line typing-line-2">Real people.</span>
-  <span className="typing-line typing-line-3">No pressure.</span>
-</h1>
-
-            <div className="brand-copy">
-  <div>LoveF8 is where real conversations actually happen.</div>
-  <div>A warmer place to start something real.</div>
-  <div>Show up as you are, and find someone who genuinely wants to talk back.</div>
-  <div>No pressure. No perfect-match promises — just something real from the very first message.</div>
-</div>
-
-<div className="brand-tags">
-  <div className="brand-tag">Real-time conversations</div>
-  <div className="brand-tag">Someone to talk to</div>
-  <div className="brand-tag">Real human connection</div>
-</div>
-
-<div className="brand-trust-line">
-  Built for people who want someone to actually talk back.
-</div>
-          </section>
-
           <section className="auth-card">
             <div className="card-logo-wrap">
               <img src="/lovef8-bg.png" alt="LoveF8" className="card-logo" />
@@ -304,52 +270,52 @@ export default function AuthPage() {
               <label className="field-label">Password</label>
 
               <input
-  type={showPassword ? 'text' : 'password'}
-  value={password}
-  onChange={(e) => setPassword(e.target.value)}
-  placeholder="••••••••"
-  style={{
-    ...inputStyle,
-    marginBottom: 8,
-  }}
-/>
+                type={showPassword ? 'text' : 'password'}
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                placeholder="••••••••"
+                style={{
+                  ...inputStyle,
+                  marginBottom: 8,
+                }}
+              />
 
-<label className="show-password-label">
-  <input
-    type="checkbox"
-    checked={showPassword}
-    onChange={(e) => setShowPassword(e.target.checked)}
-  />
-  <span>Show password</span>
-</label>
+              <label className="show-password-label">
+                <input
+                  type="checkbox"
+                  checked={showPassword}
+                  onChange={(e) => setShowPassword(e.target.checked)}
+                />
+                <span>Show password</span>
+              </label>
 
               {mode === 'login' ? (
                 <>
-                 <button
-  onClick={handleLogin}
-  disabled={busy}
-  type="button"
-  style={{
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-    width: '100%',
-    minHeight: 52,
-    marginTop: 10,
-    padding: '14px 16px',
-    borderRadius: 14,
-    border: 'none',
-    background: 'linear-gradient(135deg, #ff3f9d 0%, #8b2cf5 100%)',
-    color: '#ffffff',
-    cursor: busy ? 'not-allowed' : 'pointer',
-    fontWeight: 900,
-    fontSize: 15,
-    boxShadow: '0 16px 34px rgba(181, 55, 154, 0.26)',
-    opacity: busy ? 0.65 : 1,
-  }}
->
-  {busy ? 'Signing in...' : 'Login'}
-</button>
+                  <button
+                    onClick={handleLogin}
+                    disabled={busy}
+                    type="button"
+                    style={{
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      width: '100%',
+                      minHeight: 52,
+                      marginTop: 10,
+                      padding: '14px 16px',
+                      borderRadius: 14,
+                      border: 'none',
+                      background: 'linear-gradient(135deg, #ff3f9d 0%, #8b2cf5 100%)',
+                      color: '#ffffff',
+                      cursor: busy ? 'not-allowed' : 'pointer',
+                      fontWeight: 900,
+                      fontSize: 15,
+                      boxShadow: '0 16px 34px rgba(181, 55, 154, 0.26)',
+                      opacity: busy ? 0.65 : 1,
+                    }}
+                  >
+                    {busy ? 'Signing in...' : 'Login'}
+                  </button>
 
                   <div className="reset-block">
                     <div className="reset-title">Forgot password?</div>
@@ -424,36 +390,47 @@ export default function AuthPage() {
                 </>
               )}
             </div>
+          </section>
 
-            <div className="mini-chat-card">
-              <div className="mini-chat-header">
-                <div>
-                  <div className="mini-chat-title">Live conversation preview</div>
-                  <div className="mini-chat-subtitle">A warmer way to start talking</div>
-                </div>
-                <div className="mini-chat-live">Live</div>
+          <section className="brand-panel">
+            <div className="brand-intro">
+              <div className="brand-intro-title">
+                Welcome to <span>LoveF8.com</span>
               </div>
+              <div className="brand-intro-subtitle">
+                Where real conversations happen, with Real People.
+              </div>
+            </div>
 
-              <div className="mini-chat-messages">
-  <div className="mini-message other mini-message-1">Hello, how are you?</div>
-  <div className="mini-message mine mini-message-2">Good, thank you for asking.</div>
+            <h1 className="brand-title" aria-label="Real conversations. Real people. No pressure.">
+              <span className="typing-line typing-line-1">Real conversations.</span>
+              <span className="typing-line typing-line-2">Real people.</span>
+              <span className="typing-line typing-line-3">No pressure.</span>
+            </h1>
 
-  <div className="mini-typing mini-typing-3" aria-label="Someone is typing">
-    <span></span>
-    <span></span>
-    <span></span>
-  </div>
+            <div className="brand-copy">
+              <div>LoveF8 is where real conversations actually happen.</div>
+              <div>A warmer place to start something real.</div>
+              <div>Show up as you are, and find someone who genuinely wants to talk back.</div>
+              <div>
+                No pressure. No perfect-match promises — just something real from the very first
+                message.
+              </div>
+            </div>
 
-  <div className="mini-message other mini-message-4">I missed talking to you last night.</div>
-  <div className="mini-message mine mini-message-5">I did also. Was stuck at work late.</div>
-  <div className="mini-message other mini-message-6">
-    So sorry to hear that. Did you get my last picture?
-  </div>
-</div>
+            <div className="brand-tags">
+              <div className="brand-tag">Real-time conversations</div>
+              <div className="brand-tag">Someone to talk to</div>
+              <div className="brand-tag">Real human connection</div>
+            </div>
+
+            <div className="brand-trust-line">
+              Built for people who want someone to actually talk back.
             </div>
           </section>
         </div>
-         </div>
+      </div>
+
       <style jsx>{`
         .auth-shell {
           position: relative;
@@ -462,206 +439,18 @@ export default function AuthPage() {
           display: flex;
           align-items: center;
           justify-content: center;
-          padding: 32px 18px;
+          padding: 24px 18px;
           box-sizing: border-box;
         }
 
         .auth-grid {
-  width: 100%;
-  max-width: 1120px;
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: 16px;
-  align-items: start;
-}
-
-        .brand-panel {
-  min-width: 0;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  padding: 32px 22px;
-  border-radius: 34px;
-  background:
-    radial-gradient(circle at top left, rgba(255, 63, 157, 0.18), transparent 36%),
-    radial-gradient(circle at bottom right, rgba(139, 44, 245, 0.18), transparent 34%),
-    rgba(255, 255, 255, 0.42);
-  border: 1px solid rgba(255, 255, 255, 0.65);
-  box-shadow: 0 24px 70px rgba(83, 34, 115, 0.10);
-}
-
-.brand-intro {
-  margin-bottom: 18px;
-}
-
-.brand-intro-title {
-  font-size: clamp(24px, 3vw, 34px);
-  line-height: 1.1;
-  font-weight: 900;
-  letter-spacing: -0.03em;
-  color: #2b1841;
-}
-
-.brand-intro-title span {
-  background: linear-gradient(135deg, #ff3f9d 0%, #8b2cf5 55%, #4f46e5 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-  color: transparent;
-  text-shadow: 0 10px 24px rgba(181, 55, 154, 0.14);
-}
-
-.brand-intro-subtitle {
-  margin-top: 8px;
-  max-width: 540px;
-  font-size: 15px;
-  line-height: 1.5;
-  font-weight: 700;
-  color: #6a5a82;
-}
-
-        .brand-pill {
-          display: inline-flex;
-          align-items: center;
-          gap: 10px;
-          width: fit-content;
-          padding: 8px 14px;
-          border-radius: 999px;
-          background: rgba(255, 255, 255, 0.72);
-          border: 1px solid rgba(192, 132, 252, 0.28);
-          box-shadow: 0 10px 30px rgba(92, 39, 130, 0.08);
-          color: #7c2d92;
-          font-size: 12px;
-          font-weight: 800;
-          letter-spacing: 0.08em;
-          text-transform: uppercase;
+          width: 100%;
+          max-width: 1120px;
+          display: grid;
+          grid-template-columns: 1fr;
+          gap: 14px;
+          align-items: start;
         }
-
-     .brand-title {
-  margin-top: 16px;
-  margin-bottom: 0;
-  display: grid;
-  gap: 4px;
-  font-size: clamp(32px, 4.4vw, 54px);
-  line-height: 1.02;
-  font-weight: 900;
-  letter-spacing: -0.045em;
-  color: #1f1333;
-}
-
-.typing-line {
-  display: block;
-  width: 0;
-  max-width: fit-content;
-  overflow: hidden;
-  white-space: nowrap;
-  border-right: 4px solid rgba(139, 44, 245, 0.8);
-}
-
-.typing-line-1 {
-  animation:
-    typeLoopLine1 7.2s steps(19, end) infinite,
-    blinkCaret 0.75s step-end infinite;
-}
-
-.typing-line-2 {
-  animation:
-    typeLoopLine2 7.2s steps(12, end) infinite,
-    blinkCaret 0.75s step-end infinite;
-}
-
-.typing-line-3 {
-  animation:
-    typeLoopLine3 7.2s steps(12, end) infinite,
-    blinkCaret 0.75s step-end infinite;
-}
-
-@keyframes typeLoopLine1 {
-  0% {
-    width: 0;
-  }
-  18% {
-    width: 19ch;
-  }
-  82% {
-    width: 19ch;
-  }
-  100% {
-    width: 0;
-  }
-}
-
-@keyframes typeLoopLine2 {
-  0%, 22% {
-    width: 0;
-  }
-  40% {
-    width: 12ch;
-  }
-  82% {
-    width: 12ch;
-  }
-  100% {
-    width: 0;
-  }
-}
-
-@keyframes typeLoopLine3 {
-  0%, 44% {
-    width: 0;
-  }
-  62% {
-    width: 12ch;
-  }
-  82% {
-    width: 12ch;
-  }
-  100% {
-    width: 0;
-  }
-}
-
-@keyframes blinkCaret {
-  50% {
-    border-color: transparent;
-  }
-}
-
-        .brand-copy {
-  margin-top: 14px;
-  max-width: 560px;
-  display: grid;
-  gap: 12px;
-  font-size: 18px;
-  line-height: 1.45;
-  color: #5f5575;
-}
-
-        .brand-tags {
-          margin-top: 28px;
-          display: flex;
-          flex-wrap: wrap;
-          gap: 12px;
-        }
-
-        .brand-tag {
-  padding: 12px 16px;
-  border-radius: 999px;
-  background: linear-gradient(135deg, rgba(255, 63, 157, 0.14), rgba(139, 44, 245, 0.14));
-  border: 1px solid rgba(255, 105, 180, 0.30);
-  box-shadow: 0 12px 30px rgba(181, 55, 154, 0.10);
-  color: #3b214f;
-  font-size: 14px;
-  font-weight: 900;
-}
-
-.brand-trust-line {
-  margin-top: 18px;
-  max-width: 520px;
-  color: #4b3f66;
-  font-size: 15px;
-  font-weight: 800;
-}
 
         .auth-card {
           min-width: 0;
@@ -681,12 +470,12 @@ export default function AuthPage() {
         }
 
         .card-logo {
-  width: 150px;
-  height: 150px;
-  object-fit: contain;
-  margin-bottom: 10px;
-  filter: drop-shadow(0 16px 28px rgba(255, 63, 157, 0.22));
-}
+          width: 150px;
+          height: 150px;
+          object-fit: contain;
+          margin-bottom: 10px;
+          filter: drop-shadow(0 16px 28px rgba(255, 63, 157, 0.22));
+        }
 
         .card-title {
           font-size: 34px;
@@ -741,184 +530,6 @@ export default function AuthPage() {
           box-sizing: border-box;
         }
 
-        .mini-chat-card {
-  margin-top: 18px;
-  border-radius: 22px;
-  border: 1px solid rgba(226, 202, 255, 0.9);
-  background:
-    radial-gradient(circle at top left, rgba(255, 63, 157, 0.12), transparent 38%),
-    radial-gradient(circle at bottom right, rgba(139, 44, 245, 0.12), transparent 38%),
-    rgba(255, 255, 255, 0.94);
-  box-shadow: 0 18px 42px rgba(83, 34, 115, 0.10);
-  padding: 16px;
-}
-
-.mini-chat-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 12px;
-  margin-bottom: 14px;
-}
-
-.mini-chat-title {
-  font-size: 14px;
-  font-weight: 900;
-  color: #231433;
-}
-
-.mini-chat-subtitle {
-  margin-top: 3px;
-  font-size: 12px;
-  font-weight: 700;
-  color: #7b6e94;
-}
-
-.mini-chat-live {
-  border-radius: 999px;
-  background: #ecfdf3;
-  border: 1px solid #bbf7d0;
-  color: #15803d;
-  padding: 5px 9px;
-  font-size: 11px;
-  font-weight: 900;
-  text-transform: uppercase;
-}
-
-.mini-chat-messages {
-  display: grid;
-  gap: 9px;
-}
-
-.mini-message {
-  max-width: 86%;
-  border-radius: 16px;
-  padding: 10px 12px;
-  font-size: 13px;
-  line-height: 1.35;
-  font-weight: 700;
-}
-
-.mini-message.other {
-  justify-self: start;
-  background: #fff;
-  border: 1px solid #eadcff;
-  color: #3b214f;
-}
-
-.mini-message.mine {
-  justify-self: end;
-  background: linear-gradient(135deg, #ff3f9d 0%, #8b2cf5 100%);
-  color: #fff;
-  box-shadow: 0 10px 24px rgba(181, 55, 154, 0.22);
-}
-  .mini-message-1 {
-  animation: miniMessageLoop 8.5s ease-out infinite;
-}
-
-.mini-message-2 {
-  animation: miniMessageLoop 8.5s ease-out 0.8s infinite;
-}
-
-.mini-typing-3 {
-  animation: miniTypingLoop 8.5s ease-out 1.45s infinite;
-}
-
-.mini-message-4 {
-  animation: miniMessageLoop 8.5s ease-out 3.1s infinite;
-}
-
-.mini-message-5 {
-  animation: miniMessageLoop 8.5s ease-out 3.8s infinite;
-}
-
-.mini-message-6 {
-  animation: miniMessageLoop 8.5s ease-out 4.5s infinite;
-}
-
-.mini-typing {
-  justify-self: start;
-  display: inline-flex;
-  align-items: center;
-  gap: 5px;
-  width: fit-content;
-  border-radius: 16px;
-  border: 1px solid #eadcff;
-  background: #fff;
-  padding: 11px 13px;
-  box-shadow: 0 10px 24px rgba(83, 34, 115, 0.06);
-}
-
-.mini-typing span {
-  width: 7px;
-  height: 7px;
-  border-radius: 999px;
-  background: #8b2cf5;
-  opacity: 0.35;
-  animation: miniDotBounce 1s infinite;
-}
-
-.mini-typing span:nth-child(2) {
-  animation-delay: 0.15s;
-}
-
-.mini-typing span:nth-child(3) {
-  animation-delay: 0.3s;
-}
-
-@keyframes miniMessageLoop {
-  0% {
-    opacity: 0;
-    transform: translateY(8px) scale(0.98);
-  }
-  8% {
-    opacity: 1;
-    transform: translateY(0) scale(1);
-  }
-  78% {
-    opacity: 1;
-    transform: translateY(0) scale(1);
-  }
-  100% {
-    opacity: 0;
-    transform: translateY(4px) scale(0.98);
-  }
-}
-
-@keyframes miniTypingLoop {
-  0% {
-    opacity: 0;
-    transform: translateY(8px);
-  }
-  10% {
-    opacity: 1;
-    transform: translateY(0);
-  }
-  32% {
-    opacity: 1;
-    transform: translateY(0);
-  }
-  42% {
-    opacity: 0;
-    transform: translateY(4px);
-  }
-  100% {
-    opacity: 0;
-    transform: translateY(4px);
-  }
-
-
-@keyframes miniDotBounce {
-  0%, 80%, 100% {
-    transform: translateY(0);
-    opacity: 0.35;
-  }
-  40% {
-    transform: translateY(-4px);
-    opacity: 1;
-  }
-}
-
         .field-label {
           display: block;
           font-size: 12px;
@@ -938,44 +549,44 @@ export default function AuthPage() {
         }
 
         .show-password-label {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  margin-bottom: 14px;
-  color: #5d5078;
-  font-size: 13px;
-  font-weight: 800;
-  cursor: pointer;
-}
+          display: flex;
+          align-items: center;
+          gap: 8px;
+          margin-bottom: 14px;
+          color: #5d5078;
+          font-size: 13px;
+          font-weight: 800;
+          cursor: pointer;
+        }
 
         .primary-button {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 100%;
-  min-height: 52px;
-  margin-top: 8px;
-  padding: 14px 16px;
-  border-radius: 14px;
-  border: none;
-  outline: none;
-  appearance: none;
-  -webkit-appearance: none;
-  background: linear-gradient(135deg, #ff3f9d 0%, #8b2cf5 100%);
-  color: #ffffff;
-  cursor: pointer;
-  font-weight: 900;
-  font-size: 15px;
-  text-align: center;
-  text-decoration: none;
-  box-shadow: 0 16px 34px rgba(181, 55, 154, 0.26);
-  opacity: 1;
-}
+          display: inline-flex;
+          align-items: center;
+          justify-content: center;
+          width: 100%;
+          min-height: 52px;
+          margin-top: 8px;
+          padding: 14px 16px;
+          border-radius: 14px;
+          border: none;
+          outline: none;
+          appearance: none;
+          -webkit-appearance: none;
+          background: linear-gradient(135deg, #ff3f9d 0%, #8b2cf5 100%);
+          color: #ffffff;
+          cursor: pointer;
+          font-weight: 900;
+          font-size: 15px;
+          text-align: center;
+          text-decoration: none;
+          box-shadow: 0 16px 34px rgba(181, 55, 154, 0.26);
+          opacity: 1;
+        }
 
-.primary-button:disabled {
-  cursor: not-allowed;
-  opacity: 0.65;
-}
+        .primary-button:disabled {
+          cursor: not-allowed;
+          opacity: 0.65;
+        }
 
         .reset-block {
           margin-top: 18px;
@@ -1024,52 +635,228 @@ export default function AuthPage() {
           cursor: pointer;
         }
 
-@media (min-width: 961px) {
-  .auth-grid {
-    grid-template-columns: minmax(0, 1.05fr) minmax(0, 0.95fr);
-    gap: 28px;
-    align-items: center;
-  }
-}
+        .brand-panel {
+          min-width: 0;
+          display: flex;
+          flex-direction: column;
+          justify-content: center;
+          padding: 22px 18px;
+          border-radius: 30px;
+          background:
+            radial-gradient(circle at top left, rgba(255, 63, 157, 0.16), transparent 36%),
+            radial-gradient(circle at bottom right, rgba(139, 44, 245, 0.16), transparent 34%),
+            rgba(255, 255, 255, 0.42);
+          border: 1px solid rgba(255, 255, 255, 0.65);
+          box-shadow: 0 24px 70px rgba(83, 34, 115, 0.1);
+        }
+
+        .brand-intro {
+          margin-bottom: 8px;
+        }
+
+        .brand-intro-title {
+          font-size: clamp(21px, 2.4vw, 28px);
+          line-height: 1.06;
+          font-weight: 900;
+          letter-spacing: -0.03em;
+          color: #2b1841;
+        }
+
+        .brand-intro-title span {
+          background: linear-gradient(135deg, #ff3f9d 0%, #8b2cf5 55%, #4f46e5 100%);
+          -webkit-background-clip: text;
+          -webkit-text-fill-color: transparent;
+          background-clip: text;
+          color: transparent;
+          text-shadow: 0 10px 24px rgba(181, 55, 154, 0.14);
+        }
+
+        .brand-intro-subtitle {
+          margin-top: 5px;
+          max-width: 540px;
+          font-size: 13px;
+          line-height: 1.3;
+          font-weight: 700;
+          color: #6a5a82;
+        }
+
+        .brand-title {
+          margin-top: 8px;
+          margin-bottom: 0;
+          display: grid;
+          gap: 0;
+          font-size: clamp(24px, 3.3vw, 40px);
+          line-height: 1;
+          font-weight: 900;
+          letter-spacing: -0.045em;
+          color: #1f1333;
+        }
+
+        .typing-line {
+          display: block;
+          width: 0;
+          max-width: fit-content;
+          overflow: hidden;
+          white-space: nowrap;
+          border-right: 3px solid rgba(139, 44, 245, 0.8);
+        }
+
+        .typing-line-1 {
+          animation:
+            typeLoopLine1 7.2s steps(19, end) infinite,
+            blinkCaret 0.75s step-end infinite;
+        }
+
+        .typing-line-2 {
+          animation:
+            typeLoopLine2 7.2s steps(12, end) infinite,
+            blinkCaret 0.75s step-end infinite;
+        }
+
+        .typing-line-3 {
+          animation:
+            typeLoopLine3 7.2s steps(12, end) infinite,
+            blinkCaret 0.75s step-end infinite;
+        }
+
+        @keyframes typeLoopLine1 {
+          0% {
+            width: 0;
+          }
+          18% {
+            width: 19ch;
+          }
+          82% {
+            width: 19ch;
+          }
+          100% {
+            width: 0;
+          }
+        }
+
+        @keyframes typeLoopLine2 {
+          0%,
+          22% {
+            width: 0;
+          }
+          40% {
+            width: 12ch;
+          }
+          82% {
+            width: 12ch;
+          }
+          100% {
+            width: 0;
+          }
+        }
+
+        @keyframes typeLoopLine3 {
+          0%,
+          44% {
+            width: 0;
+          }
+          62% {
+            width: 12ch;
+          }
+          82% {
+            width: 12ch;
+          }
+          100% {
+            width: 0;
+          }
+        }
+
+        @keyframes blinkCaret {
+          50% {
+            border-color: transparent;
+          }
+        }
+
+        .brand-copy {
+          margin-top: 10px;
+          max-width: 560px;
+          display: grid;
+          gap: 7px;
+          font-size: 14px;
+          line-height: 1.34;
+          color: #5f5575;
+        }
+
+        .brand-tags {
+          margin-top: 14px;
+          display: flex;
+          flex-wrap: wrap;
+          gap: 8px;
+        }
+
+        .brand-tag {
+          padding: 7px 11px;
+          border-radius: 999px;
+          background: linear-gradient(135deg, rgba(255, 63, 157, 0.14), rgba(139, 44, 245, 0.14));
+          border: 1px solid rgba(255, 105, 180, 0.3);
+          box-shadow: 0 12px 30px rgba(181, 55, 154, 0.1);
+          color: #3b214f;
+          font-size: 12px;
+          line-height: 1.1;
+          font-weight: 900;
+        }
+
+        .brand-trust-line {
+          margin-top: 10px;
+          max-width: 520px;
+          color: #4b3f66;
+          font-size: 13px;
+          line-height: 1.3;
+          font-weight: 800;
+        }
+
+        @media (min-width: 961px) {
+          .auth-grid {
+            grid-template-columns: minmax(0, 0.95fr) minmax(0, 1.05fr);
+            gap: 24px;
+            align-items: center;
+          }
+        }
 
         @media (max-width: 960px) {
           .auth-shell {
             align-items: flex-start;
-            padding: 18px 12px 28px;
+            padding: 14px 12px 24px;
           }
 
           .auth-grid {
             grid-template-columns: 1fr;
-            gap: 16px;
+            gap: 12px;
             max-width: 640px;
-          }
-
-          .brand-panel {
-            padding: 6px 4px 0;
-          }
-
-          .brand-title {
-            font-size: 42px;
-          }
-
-          .brand-copy {
-            font-size: 17px;
-            line-height: 1.55;
-            max-width: 100%;
-          }
-
-          .brand-tags {
-            gap: 10px;
-          }
-
-          .brand-tag {
-            padding: 10px 14px;
-            font-size: 13px;
           }
 
           .auth-card {
             padding: 18px;
             border-radius: 24px;
+          }
+
+          .brand-panel {
+            padding: 16px 14px;
+            border-radius: 24px;
+          }
+
+          .brand-title {
+            font-size: 30px;
+          }
+
+          .brand-copy {
+            font-size: 13px;
+            line-height: 1.35;
+            max-width: 100%;
+          }
+
+          .brand-tags {
+            gap: 6px;
+          }
+
+          .brand-tag {
+            padding: 6px 10px;
+            font-size: 11px;
           }
 
           .card-logo {
@@ -1087,99 +874,94 @@ export default function AuthPage() {
           }
         }
 
-       @media (max-width: 560px) {
-  .auth-shell {
-    padding: 12px 8px 20px;
-  }
+        @media (max-width: 560px) {
+          .auth-shell {
+            padding: 10px 8px 18px;
+          }
 
-  .auth-grid {
-    gap: 12px;
-  }
+          .auth-grid {
+            gap: 10px;
+          }
 
-  .brand-panel {
-    padding: 18px 14px;
-    border-radius: 26px;
-  }
+          .auth-card {
+            padding: 14px;
+            border-radius: 22px;
+          }
 
-  .brand-intro {
-    margin-bottom: 12px;
-  }
+          .brand-panel {
+            padding: 14px 12px;
+            border-radius: 22px;
+          }
 
-  .brand-intro-title {
-    font-size: 22px;
-    line-height: 1.08;
-  }
+          .brand-intro {
+            margin-bottom: 6px;
+          }
 
-  .brand-intro-subtitle {
-    margin-top: 6px;
-    font-size: 13px;
-    line-height: 1.35;
-  }
+          .brand-intro-title {
+            font-size: 20px;
+            line-height: 1.05;
+          }
 
-  .brand-title {
-    font-size: 26px;
-    line-height: 1.04;
-    gap: 2px;
-    margin-top: 10px;
-  }
+          .brand-intro-subtitle {
+            margin-top: 5px;
+            font-size: 12px;
+            line-height: 1.25;
+          }
 
-  .brand-copy {
-  margin-top: 10px;
-  gap: 10px;
-  font-size: 13px;
-  line-height: 1.35;
-}
+          .brand-title {
+            font-size: 23px;
+            line-height: 1;
+            gap: 0;
+            margin-top: 7px;
+          }
 
-  .brand-tags {
-  margin-top: 12px;
-  gap: 6px;
-}
+          .brand-copy {
+            margin-top: 8px;
+            gap: 6px;
+            font-size: 12px;
+            line-height: 1.28;
+          }
 
-.brand-tag {
-  padding: 6px 10px;
-  font-size: 11px;
-  line-height: 1.1;
-}
-  
-  .brand-trust-line {
-    margin-top: 12px;
-    font-size: 13px;
-    line-height: 1.35;
-  }
+          .brand-tags {
+            margin-top: 10px;
+            gap: 5px;
+          }
 
-  .card-logo {
-    width: 110px;
-    height: 110px;
-  }
+          .brand-tag {
+            padding: 5px 8px;
+            font-size: 10px;
+            line-height: 1.1;
+          }
 
-  .mode-switch {
-    gap: 8px;
-    padding: 5px;
-  }
+          .brand-trust-line {
+            margin-top: 8px;
+            font-size: 12px;
+            line-height: 1.25;
+          }
 
-  .mode-button {
-    padding: 11px 10px;
-    font-size: 14px;
-  }
+          .card-logo {
+            width: 90px;
+            height: 90px;
+          }
 
-  .card-title {
-    font-size: 28px;
-  }
+          .mode-switch {
+            gap: 8px;
+            padding: 5px;
+          }
 
-  .auth-card {
-    padding: 14px;
-    border-radius: 22px;
-  }
+          .mode-button {
+            padding: 11px 10px;
+            font-size: 14px;
+          }
 
-  .form-card {
-    padding: 14px;
-  }
+          .card-title {
+            font-size: 28px;
+          }
 
-  .mini-chat-card {
-    padding: 12px;
-    border-radius: 18px;
-  }
-}
+          .form-card {
+            padding: 14px;
+          }
+        }
       `}</style>
     </main>
   );
