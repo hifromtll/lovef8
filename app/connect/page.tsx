@@ -379,7 +379,7 @@ const trSafe = (text: string) => (forceEnglish ? text : translatedTopNavMap[text
 
 const [filtersOpen, setFiltersOpen] = useState(false);
   const [countryFilter, setCountryFilter] = useState('');
-  const [minAge, setMinAge] = useState('19');
+  const [minAge, setMinAge] = useState('');
   const [maxAge, setMaxAge] = useState('');
   const [sortAge, setSortAge] = useState<'default' | 'youngest' | 'oldest'>('default');
 
@@ -1228,45 +1228,61 @@ setHostsLoading(false);
     return Number.isFinite(value) && maxAge !== '' ? value : null;
   }, [maxAge]);
 
-  const applyDiscoveryFilters = useCallback(
-    <T extends HostRow | UserRow>(list: T[]) => {
-      let next = [...list];
+ const applyDiscoveryFilters = useCallback(
+  <T extends HostRow | UserRow>(list: T[]) => {
+    let next = [...list];
 
-      if (countryFilter.trim()) {
-        const normalizedCountry = countryFilter.toLowerCase();
-        next = next.filter((item) =>
-          (item.country_origin?.toLowerCase() || '').includes(normalizedCountry)
-        );
-      }
+    // Safety rule:
+    // If someone entered an age under 19, hide them.
+    // If they skipped age, still let them show.
+    next = next.filter((item) => {
+      if (typeof item.age !== 'number') return true;
+      if (!Number.isFinite(item.age)) return true;
 
-      if (parsedMinAge !== null) {
-        next = next.filter((item) => typeof item.age === 'number' && item.age >= parsedMinAge);
-      }
+      return item.age >= 19;
+    });
 
-      if (parsedMaxAge !== null) {
-        next = next.filter((item) => typeof item.age === 'number' && item.age <= parsedMaxAge);
-      }
+    if (countryFilter.trim()) {
+      const normalizedCountry = countryFilter.toLowerCase();
+      next = next.filter((item) =>
+        (item.country_origin?.toLowerCase() || '').includes(normalizedCountry)
+      );
+    }
 
-      if (sortAge === 'youngest') {
-        next.sort((a, b) => {
-          const aAge = typeof a.age === 'number' ? a.age : Number.MAX_SAFE_INTEGER;
-          const bAge = typeof b.age === 'number' ? b.age : Number.MAX_SAFE_INTEGER;
-          return aAge - bAge;
-        });
-      }
+    if (parsedMinAge !== null) {
+      next = next.filter((item) => {
+        if (typeof item.age !== 'number') return true;
+        return item.age >= parsedMinAge;
+      });
+    }
 
-      if (sortAge === 'oldest') {
-        next.sort((a, b) => {
-          const aAge = typeof a.age === 'number' ? a.age : -1;
-          const bAge = typeof b.age === 'number' ? b.age : -1;
-          return bAge - aAge;
-        });
-      }
+    if (parsedMaxAge !== null) {
+      next = next.filter((item) => {
+        if (typeof item.age !== 'number') return true;
+        return item.age <= parsedMaxAge;
+      });
+    }
 
-      return next;
-    },
-    [countryFilter, parsedMaxAge, parsedMinAge, sortAge]
-  );
+    if (sortAge === 'youngest') {
+      next.sort((a, b) => {
+        const aAge = typeof a.age === 'number' ? a.age : Number.MAX_SAFE_INTEGER;
+        const bAge = typeof b.age === 'number' ? b.age : Number.MAX_SAFE_INTEGER;
+        return aAge - bAge;
+      });
+    }
+
+    if (sortAge === 'oldest') {
+      next.sort((a, b) => {
+        const aAge = typeof a.age === 'number' ? a.age : -1;
+        const bAge = typeof b.age === 'number' ? b.age : -1;
+        return bAge - aAge;
+      });
+    }
+
+    return next;
+  },
+  [countryFilter, parsedMaxAge, parsedMinAge, sortAge]
+);
 
     const filteredHosts = useMemo(() => {
     return applyDiscoveryFilters(hosts).filter(
@@ -1297,15 +1313,15 @@ setHostsLoading(false);
   }, [applyDiscoveryFilters, blockedOtherIds, presenceByProfile, users]);
 
   const hasActiveFilters = useMemo(() => {
-    return countryFilter !== '' || minAge !== '19' || maxAge !== '' || sortAge !== 'default';
-  }, [countryFilter, maxAge, minAge, sortAge]);
+  return countryFilter !== '' || minAge !== '' || maxAge !== '' || sortAge !== 'default';
+}, [countryFilter, maxAge, minAge, sortAge]);
 
   const clearFilters = useCallback(() => {
-    setCountryFilter('');
-    setMinAge('19');
-    setMaxAge('');
-    setSortAge('default');
-  }, []);
+  setCountryFilter('');
+  setMinAge('');
+  setMaxAge('');
+  setSortAge('default');
+}, []);
 
   const refreshProfileLikeStatus = useCallback(
   async (otherProfileId: string) => {
