@@ -2511,7 +2511,7 @@ console.log('LoveF8 spark check', {
   onClick={() => router.push('/settings')}
   className="inline-flex shrink-0 items-center justify-center rounded-lg border border-violet-200 bg-violet-50/90 px-2.5 py-1.5 text-xs font-semibold text-violet-900 shadow-sm transition hover:bg-violet-100 lg:rounded-xl lg:px-3 lg:py-2 lg:text-sm"
 >
-  {trSafe('Settings')}
+  {trSafe('Profile')}
 </button>
 
 <button
