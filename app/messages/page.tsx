@@ -364,17 +364,18 @@ useEffect(() => {
     }
 
     const allTexts = [
-      'LoveF8 Messages',
-      'Messages',
-      'Connect',
-      'Talk to Guide',
-      'Wallet',
-      'Host Dashboard',
-      'Settings',
-      'Report Issue',
-      'Sign out',
-      'Get Sparks',
-    ];
+  'LoveF8 Messages',
+  'Home',
+  'Connect',
+  'Likes',
+  'Messages',
+  'Talk to Guide',
+  'Wallet',
+  'Membership',
+  'Host Dashboard',
+  'Profile',
+  'Sign out',
+];
 
     const cacheKey = buildSettingsTranslationCacheKey('messages-top-nav', targetLanguage, allTexts);
     const cached = readSettingsTranslationCache(cacheKey);
@@ -2466,6 +2467,14 @@ console.log('LoveF8 spark check', {
     className="shrink-0 rounded-lg border border-gray-300 bg-white px-2.5 py-1.5 text-[11px] font-bold text-gray-700 shadow-sm hover:bg-gray-100 lg:rounded-xl lg:px-3 lg:py-2 lg:text-xs"
 >
   {forceEnglish ? 'Use Selected Language' : 'View in English'}
+</button>
+
+<button
+  type="button"
+  onClick={() => router.push('/home')}
+  className="inline-flex shrink-0 items-center justify-center rounded-lg border border-fuchsia-200 bg-fuchsia-50/90 px-2.5 py-1.5 text-xs font-semibold text-fuchsia-900 shadow-sm transition hover:bg-fuchsia-100 lg:rounded-xl lg:px-3 lg:py-2 lg:text-sm"
+>
+  {trSafe('Home')}
 </button>
 
 <button
