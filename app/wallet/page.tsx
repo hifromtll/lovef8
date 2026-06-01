@@ -9,6 +9,7 @@ const UI_STRINGS = [
   'LoveF8 Wallet',
   'Sparks, boosters, and membership',
   'Manage your spark balance, test membership plans, and add booster sparks.',
+  'Home',
   'Back to Messages',
   'Back to Connect',
   'Total Available',
@@ -354,6 +355,14 @@ if (Array.isArray(data?.translations)) {
                 className="nav-button nav-button-secondary"
               >
                 {trSafe('Back to Messages', translated, forceEnglish)}
+              </button>
+
+              <button
+                type="button"
+                onClick={() => router.push('/home')}
+                className="nav-button nav-button-secondary"
+              >
+                {trSafe('Home', translated, forceEnglish)}
               </button>
 
               <button

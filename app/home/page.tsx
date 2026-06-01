@@ -123,6 +123,10 @@ export default function HomePage() {
     [forceEnglish, translatedHomeMap]
   );
 
+  const isApprovedHost = useMemo(() => {
+    return profile?.role === 'host' && profile?.approved === true;
+  }, [profile?.approved, profile?.role]);
+
   const displayName = useMemo(() => {
     return profile?.username?.trim() || 'LoveF8 Member';
   }, [profile?.username]);
@@ -178,6 +182,8 @@ export default function HomePage() {
         'Messages',
         'Wallet',
         'Membership',
+        'Dashboard',
+        'Host Dashboard',
         'Profile',
         'Sign out',
         'View in English',
@@ -195,6 +201,7 @@ export default function HomePage() {
         'Open messages',
         'View likes',
         'Open wallet',
+        'View Dashboard',
         'Your Profile',
         'Page basics',
         'Age / Gender',
@@ -213,6 +220,14 @@ export default function HomePage() {
         'Premium',
         'View your package, compare options, or make changes from Membership.',
         'View Membership',
+        'Host tools',
+        'Status',
+        'Approved',
+        'Use your dashboard to review earnings, readiness, and host tools.',
+        'Conversations',
+        'Inbox',
+        'Open',
+        'Keep up with people who want to talk.',
         'Sparks',
         'Available balance',
         'Sparks available',
@@ -396,13 +411,15 @@ export default function HomePage() {
             {trSafe('Connect')}
           </button>
 
-          <button
-            type="button"
-            onClick={() => router.push('/likes')}
-            className="rounded-2xl border border-pink-200 bg-pink-50 px-4 py-2 text-sm font-semibold text-pink-800 shadow-sm hover:bg-pink-100"
-          >
-            {trSafe('Likes')}
-          </button>
+          {!isApprovedHost && (
+            <button
+              type="button"
+              onClick={() => router.push('/likes')}
+              className="rounded-2xl border border-pink-200 bg-pink-50 px-4 py-2 text-sm font-semibold text-pink-800 shadow-sm hover:bg-pink-100"
+            >
+              {trSafe('Likes')}
+            </button>
+          )}
 
           <button
             type="button"
@@ -412,21 +429,33 @@ export default function HomePage() {
             {trSafe('Messages')}
           </button>
 
-          <button
-            type="button"
-            onClick={() => router.push('/wallet')}
-            className="rounded-2xl border border-amber-200 bg-amber-50 px-4 py-2 text-sm font-semibold text-amber-800 shadow-sm hover:bg-amber-100"
-          >
-            {trSafe('Wallet')}
-          </button>
+          {!isApprovedHost && (
+            <button
+              type="button"
+              onClick={() => router.push('/wallet')}
+              className="rounded-2xl border border-amber-200 bg-amber-50 px-4 py-2 text-sm font-semibold text-amber-800 shadow-sm hover:bg-amber-100"
+            >
+              {trSafe('Wallet')}
+            </button>
+          )}
 
-          <button
-            type="button"
-            onClick={() => router.push('/membership')}
-            className="rounded-2xl border border-violet-200 bg-violet-50 px-4 py-2 text-sm font-semibold text-violet-800 shadow-sm hover:bg-violet-100"
-          >
-            {trSafe('Membership')}
-          </button>
+          {isApprovedHost ? (
+            <button
+              type="button"
+              onClick={() => router.push('/host')}
+              className="rounded-2xl border border-emerald-200 bg-emerald-50 px-4 py-2 text-sm font-semibold text-emerald-800 shadow-sm hover:bg-emerald-100"
+            >
+              {trSafe('Dashboard')}
+            </button>
+          ) : (
+            <button
+              type="button"
+              onClick={() => router.push('/membership')}
+              className="rounded-2xl border border-violet-200 bg-violet-50 px-4 py-2 text-sm font-semibold text-violet-800 shadow-sm hover:bg-violet-100"
+            >
+              {trSafe('Membership')}
+            </button>
+          )}
 
           <button
             type="button"
@@ -521,21 +550,35 @@ export default function HomePage() {
                 {trSafe('Open messages')}
               </button>
 
-              <button
-                type="button"
-                onClick={() => router.push('/likes')}
-                className="rounded-2xl border border-pink-200 bg-pink-50 px-4 py-2 text-sm font-bold text-pink-800 hover:bg-pink-100"
-              >
-                {trSafe('View likes')}
-              </button>
+              {!isApprovedHost && (
+                <>
+                  <button
+                    type="button"
+                    onClick={() => router.push('/likes')}
+                    className="rounded-2xl border border-pink-200 bg-pink-50 px-4 py-2 text-sm font-bold text-pink-800 hover:bg-pink-100"
+                  >
+                    {trSafe('View likes')}
+                  </button>
 
-              <button
-                type="button"
-                onClick={() => router.push('/wallet')}
-                className="rounded-2xl border border-amber-200 bg-amber-50 px-4 py-2 text-sm font-bold text-amber-800 hover:bg-amber-100"
-              >
-                {trSafe('Open wallet')}
-              </button>
+                  <button
+                    type="button"
+                    onClick={() => router.push('/wallet')}
+                    className="rounded-2xl border border-amber-200 bg-amber-50 px-4 py-2 text-sm font-bold text-amber-800 hover:bg-amber-100"
+                  >
+                    {trSafe('Open wallet')}
+                  </button>
+                </>
+              )}
+
+              {isApprovedHost && (
+                <button
+                  type="button"
+                  onClick={() => router.push('/host')}
+                  className="rounded-2xl border border-emerald-200 bg-emerald-50 px-4 py-2 text-sm font-bold text-emerald-800 hover:bg-emerald-100"
+                >
+                  {trSafe('View Dashboard')}
+                </button>
+              )}
             </div>
           </div>
         </section>
@@ -582,65 +625,125 @@ export default function HomePage() {
             </button>
           </section>
 
-          <section className="rounded-[28px] border border-violet-100 bg-white/88 p-5 shadow-[0_14px_38px_rgba(83,34,115,0.08)] backdrop-blur">
-            <p className="text-xs font-black uppercase tracking-[0.18em] text-violet-400">
-              {trSafe('Membership')}
-            </p>
-
-            <h2 className="mt-3 text-xl font-black text-neutral-950">
-              {trSafe('Current package')}
-            </h2>
-
-            <div className="mt-5 rounded-3xl border border-violet-100 bg-violet-50/70 p-4">
-              <p className="text-sm font-semibold text-violet-700">{trSafe('Plan')}</p>
-              <p className="mt-1 text-3xl font-black text-violet-950">
-                {trSafe(membershipName)}
+          {isApprovedHost ? (
+            <section className="rounded-[28px] border border-emerald-100 bg-white/88 p-5 shadow-[0_14px_38px_rgba(83,34,115,0.08)] backdrop-blur">
+              <p className="text-xs font-black uppercase tracking-[0.18em] text-emerald-500">
+                {trSafe('Host Dashboard')}
               </p>
-            </div>
 
-            <p className="mt-4 text-sm leading-6 text-neutral-600">
-              {trSafe('View your package, compare options, or make changes from Membership.')}
-            </p>
+              <h2 className="mt-3 text-xl font-black text-neutral-950">
+                {trSafe('Host tools')}
+              </h2>
 
-            <button
-              type="button"
-              onClick={() => router.push('/membership')}
-              className="mt-5 w-full rounded-2xl bg-violet-600 px-4 py-3 text-sm font-bold text-white shadow-sm hover:bg-violet-700"
-            >
-              {trSafe('View Membership')}
-            </button>
-          </section>
+              <div className="mt-5 rounded-3xl border border-emerald-100 bg-emerald-50/80 p-4">
+                <p className="text-sm font-semibold text-emerald-700">{trSafe('Status')}</p>
+                <p className="mt-1 text-3xl font-black text-emerald-950">
+                  {trSafe('Approved')}
+                </p>
+              </div>
 
-          <section className="rounded-[28px] border border-amber-100 bg-white/88 p-5 shadow-[0_14px_38px_rgba(83,34,115,0.08)] backdrop-blur">
-            <p className="text-xs font-black uppercase tracking-[0.18em] text-amber-500">
-              {trSafe('Sparks')}
-            </p>
-
-            <h2 className="mt-3 text-xl font-black text-neutral-950">
-              {trSafe('Available balance')}
-            </h2>
-
-            <div className="mt-5 rounded-3xl border border-amber-100 bg-amber-50/80 p-4">
-              <p className="text-sm font-semibold text-amber-700">
-                {trSafe('Sparks available')}
+              <p className="mt-4 text-sm leading-6 text-neutral-600">
+                {trSafe('Use your dashboard to review earnings, readiness, and host tools.')}
               </p>
-              <p className="mt-1 text-4xl font-black text-amber-950">{sparkBalance}</p>
-            </div>
 
-            <p className="mt-4 text-sm leading-6 text-neutral-600">
-              {trSafe(
-                'Sparks help you keep conversations going and support the people you enjoy talking to.'
-              )}
-            </p>
+              <button
+                type="button"
+                onClick={() => router.push('/host')}
+                className="mt-5 w-full rounded-2xl bg-emerald-600 px-4 py-3 text-sm font-bold text-white shadow-sm hover:bg-emerald-700"
+              >
+                {trSafe('View Dashboard')}
+              </button>
+            </section>
+          ) : (
+            <section className="rounded-[28px] border border-violet-100 bg-white/88 p-5 shadow-[0_14px_38px_rgba(83,34,115,0.08)] backdrop-blur">
+              <p className="text-xs font-black uppercase tracking-[0.18em] text-violet-400">
+                {trSafe('Membership')}
+              </p>
 
-            <button
-              type="button"
-              onClick={() => router.push('/wallet')}
-              className="mt-5 w-full rounded-2xl bg-amber-500 px-4 py-3 text-sm font-bold text-white shadow-sm hover:bg-amber-600"
-            >
-              {trSafe('Open Wallet')}
-            </button>
-          </section>
+              <h2 className="mt-3 text-xl font-black text-neutral-950">
+                {trSafe('Current package')}
+              </h2>
+
+              <div className="mt-5 rounded-3xl border border-violet-100 bg-violet-50/70 p-4">
+                <p className="text-sm font-semibold text-violet-700">{trSafe('Plan')}</p>
+                <p className="mt-1 text-3xl font-black text-violet-950">
+                  {trSafe(membershipName)}
+                </p>
+              </div>
+
+              <p className="mt-4 text-sm leading-6 text-neutral-600">
+                {trSafe('View your package, compare options, or make changes from Membership.')}
+              </p>
+
+              <button
+                type="button"
+                onClick={() => router.push('/membership')}
+                className="mt-5 w-full rounded-2xl bg-violet-600 px-4 py-3 text-sm font-bold text-white shadow-sm hover:bg-violet-700"
+              >
+                {trSafe('View Membership')}
+              </button>
+            </section>
+          )}
+
+          {isApprovedHost ? (
+            <section className="rounded-[28px] border border-blue-100 bg-white/88 p-5 shadow-[0_14px_38px_rgba(83,34,115,0.08)] backdrop-blur">
+              <p className="text-xs font-black uppercase tracking-[0.18em] text-blue-500">
+                {trSafe('Messages')}
+              </p>
+
+              <h2 className="mt-3 text-xl font-black text-neutral-950">
+                {trSafe('Conversations')}
+              </h2>
+
+              <div className="mt-5 rounded-3xl border border-blue-100 bg-blue-50/80 p-4">
+                <p className="text-sm font-semibold text-blue-700">{trSafe('Inbox')}</p>
+                <p className="mt-1 text-3xl font-black text-blue-950">{trSafe('Open')}</p>
+              </div>
+
+              <p className="mt-4 text-sm leading-6 text-neutral-600">
+                {trSafe('Keep up with people who want to talk.')}
+              </p>
+
+              <button
+                type="button"
+                onClick={() => router.push('/messages')}
+                className="mt-5 w-full rounded-2xl bg-blue-600 px-4 py-3 text-sm font-bold text-white shadow-sm hover:bg-blue-700"
+              >
+                {trSafe('Open messages')}
+              </button>
+            </section>
+          ) : (
+            <section className="rounded-[28px] border border-amber-100 bg-white/88 p-5 shadow-[0_14px_38px_rgba(83,34,115,0.08)] backdrop-blur">
+              <p className="text-xs font-black uppercase tracking-[0.18em] text-amber-500">
+                {trSafe('Sparks')}
+              </p>
+
+              <h2 className="mt-3 text-xl font-black text-neutral-950">
+                {trSafe('Available balance')}
+              </h2>
+
+              <div className="mt-5 rounded-3xl border border-amber-100 bg-amber-50/80 p-4">
+                <p className="text-sm font-semibold text-amber-700">
+                  {trSafe('Sparks available')}
+                </p>
+                <p className="mt-1 text-4xl font-black text-amber-950">{sparkBalance}</p>
+              </div>
+
+              <p className="mt-4 text-sm leading-6 text-neutral-600">
+                {trSafe(
+                  'Sparks help you keep conversations going and support the people you enjoy talking to.'
+                )}
+              </p>
+
+              <button
+                type="button"
+                onClick={() => router.push('/wallet')}
+                className="mt-5 w-full rounded-2xl bg-amber-500 px-4 py-3 text-sm font-bold text-white shadow-sm hover:bg-amber-600"
+              >
+                {trSafe('Open Wallet')}
+              </button>
+            </section>
+          )}
         </div>
       </div>
     </main>
