@@ -37,7 +37,7 @@ async function routeUserByProfile(router: ReturnType<typeof useRouter>, userId: 
     return;
   }
 
-  router.push('/messages');
+  router.push('/home');
 }
 
 export default function AuthPage() {
@@ -86,7 +86,7 @@ export default function AuthPage() {
 
     const user = data.user;
     if (!user) {
-      router.push('/messages');
+      router.push('/home');
       return;
     }
 
