@@ -2461,7 +2461,7 @@ setLoading(false);
     onClick={() => router.push('/settings')}
     className="inline-flex items-center justify-center rounded-xl border border-fuchsia-100 bg-white/90 px-3 py-2 text-xs font-bold text-neutral-900 shadow-sm transition hover:bg-fuchsia-50"
   >
-    {trSafe('Settings')}
+    {trSafe('Profile')}
   </button>
 
   {showGuideButton && (
