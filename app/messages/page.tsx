@@ -330,7 +330,7 @@ const logAppEvent = useCallback(
   const showUsersSection = useMemo(() => isApprovedHostMe, [isApprovedHostMe]);
 
   const sparkWarning = useMemo(() => {
-  const profileBalance = Number((myProfile as any)?.spark_balance ?? 0);
+  const profileBalance = Number((myProfile as any)?.membership_spark_balance ?? 0);
   const totalAvailable = profileBalance + activeBoosterSparks;
 
   if (totalAvailable < 15) {
@@ -1656,10 +1656,10 @@ console.log("MEDIA CHECK:", messageKind, !!mediaFile, mediaKind);
         }
 
         const { data: profile, error: profileError } = await supabase
-          .from('profiles')
-          .select('spark_balance')
-          .eq('id', userId)
-          .single();
+  .from('profiles')
+  .select('membership_spark_balance')
+  .eq('id', userId)
+  .single();
 
         if (profileError) {
           alert(profileError.message);
@@ -1667,7 +1667,7 @@ console.log("MEDIA CHECK:", messageKind, !!mediaFile, mediaKind);
           return;
         }
 
-        let sparkBalanceStart = profile?.spark_balance || 0;
+        let sparkBalanceStart = profile?.membership_spark_balance || 0;
 
         const { data: boosters, error: boosterError } = await supabase
           .from('member_booster_credits')
@@ -1716,11 +1716,11 @@ console.log("MEDIA CHECK:", messageKind, !!mediaFile, mediaKind);
 
         if (sparkBalanceEnd !== sparkBalanceStart) {
           const { error: sparkUpdateError } = await supabase
-            .from('profiles')
-            .update({
-              spark_balance: sparkBalanceEnd,
-            })
-            .eq('id', userId);
+  .from('profiles')
+  .update({
+    membership_spark_balance: sparkBalanceEnd,
+  })
+  .eq('id', userId);
 
           if (sparkUpdateError) {
             alert(`Spark deduction failed: ${sparkUpdateError.message}`);
@@ -1761,10 +1761,10 @@ console.log("MEDIA CHECK:", messageKind, !!mediaFile, mediaKind);
         }
 
         const { data: refreshedProfile, error: refreshedProfileError } = await supabase
-          .from('profiles')
-          .select('spark_balance')
-          .eq('id', userId)
-          .single();
+  .from('profiles')
+  .select('membership_spark_balance')
+  .eq('id', userId)
+  .single();
 
         if (refreshedProfileError) {
           console.error('refresh spark balance error:', refreshedProfileError);
@@ -1773,7 +1773,7 @@ console.log("MEDIA CHECK:", messageKind, !!mediaFile, mediaKind);
             prev
               ? ({
                   ...prev,
-                  spark_balance: refreshedProfile.spark_balance ?? 0,
+                  membership_spark_balance: refreshedProfile.membership_spark_balance ?? 0,
                 } as MyProfile)
               : prev
           );
@@ -1990,7 +1990,7 @@ setActiveBoosterSparks(totalBooster);
      const { data: meProf, error: meErr } = await supabase
   .from('profiles')
 .select(
-'role, approved, is_system_host, is_guide, discoverable, chat_mode, avatar_thumb_url, avatar_url, short_bio, best_at, looking_for, profile_tags, location_text, timezone, normally_online_start, normally_online_end, languages_spoken, spark_balance, membership_tier, created_at'
+'role, approved, is_system_host, is_guide, discoverable, chat_mode, avatar_thumb_url, avatar_url, short_bio, best_at, looking_for, profile_tags, location_text, timezone, normally_online_start, normally_online_end, languages_spoken, spark_balance, membership_spark_balance, membership_tier, created_at'
 )
 .eq('id', user.id)
 .single();
@@ -2018,10 +2018,11 @@ setMyProfile({
 setTargetLanguage(profileLanguages[0] || 'English');
 }
 const totalAvailableSparks =
-  Number((meProf as any)?.spark_balance ?? 0) + totalBooster;
+  Number((meProf as any)?.membership_spark_balance ?? 0) + totalBooster;
 
 console.log('LoveF8 spark check', {
-  profileSparkBalance: Number((meProf as any)?.spark_balance ?? 0),
+  membershipSparkBalance: Number((meProf as any)?.membership_spark_balance ?? 0),
+  oldSparkBalance: Number((meProf as any)?.spark_balance ?? 0),
   activeBoosterSparks: totalBooster,
   totalAvailableSparks,
 });
