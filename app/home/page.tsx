@@ -21,6 +21,7 @@ type HomeProfile = {
   location_text: string | null;
   country_origin: string | null;
   membership_tier: string | null;
+  membership_spark_balance: number | null;
   spark_balance: number | null;
   languages_spoken: string[] | null;
 };
@@ -110,6 +111,7 @@ export default function HomePage() {
   const [profile, setProfile] = useState<HomeProfile | null>(null);
   const [avatarUrl, setAvatarUrl] = useState<string | null>(null);
   const [errorText, setErrorText] = useState<string | null>(null);
+  const [boosterSparkBalance, setBoosterSparkBalance] = useState(0);
 
   const [targetLanguage, setTargetLanguage] = useState<string>('English');
   const [translatedHomeMap, setTranslatedHomeMap] = useState<Record<string, string>>({});
@@ -135,9 +137,13 @@ export default function HomePage() {
     return formatMembership(profile?.membership_tier);
   }, [profile?.membership_tier]);
 
-  const sparkBalance = useMemo(() => {
-    return profile?.spark_balance ?? 0;
-  }, [profile?.spark_balance]);
+  const membershipSparkBalance = useMemo(() => {
+  return profile?.membership_spark_balance ?? 0;
+}, [profile?.membership_spark_balance]);
+
+const sparkBalance = useMemo(() => {
+  return membershipSparkBalance + boosterSparkBalance;
+}, [membershipSparkBalance, boosterSparkBalance]);
 
   const locationLine = useMemo(() => {
     const parts = [profile?.location_text, profile?.country_origin]
@@ -315,6 +321,7 @@ export default function HomePage() {
           country_origin,
           membership_tier,
           spark_balance,
+          membership_spark_balance,
           languages_spoken
           `
         )
@@ -332,6 +339,27 @@ export default function HomePage() {
 
       const loadedProfile = data as HomeProfile;
       setProfile(loadedProfile);
+
+      const nowIso = new Date().toISOString();
+
+const { data: boosterData, error: boosterError } = await supabase
+  .from('member_booster_credits')
+  .select('sparks_remaining')
+  .eq('profile_id', user.id)
+  .gt('sparks_remaining', 0)
+  .gt('expires_at', nowIso);
+
+if (boosterError) {
+  console.error('home booster sparks load error:', boosterError);
+  setBoosterSparkBalance(0);
+} else {
+  const boosterTotal = (boosterData || []).reduce(
+    (sum, row) => sum + (row.sparks_remaining || 0),
+    0
+  );
+
+  setBoosterSparkBalance(boosterTotal);
+}
 
       const profileLanguages = Array.isArray(loadedProfile.languages_spoken)
         ? loadedProfile.languages_spoken
