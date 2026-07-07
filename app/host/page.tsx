@@ -438,7 +438,16 @@ export default function HostPage() {
       const allTexts = [
         'LoveF8 Host Area',
         'Host Dashboard',
+        'Welcome to the Host Dashboard',
         'Members can apply to become hosts, complete readiness steps, and prepare for approval.',
+        'At LoveF8, Hosts have the opportunity to earn real money through tips while having genuine conversations with people who want to connect.',
+        'Many Hosts can earn $200 – $800+ per month while working flexible hours from home and choosing who they talk to.',
+        'Why Hosts love it:',
+        'Get paid for being yourself',
+        'No scripts or pressure',
+        'Real conversations with real people',
+        'Withdraw your earnings easily',
+        'Ready to get started? Complete your profile and verification to submit your Host application.',
         'Pending',
         'Available',
         'Paid',
@@ -819,12 +828,101 @@ export default function HostPage() {
             >
               {trSafe('LoveF8 Host Area')}
             </div>
+            <h1 style={{ margin: 0, fontSize: 34 }}>
+              {trSafe('Welcome to the Host Dashboard')}
+            </h1>
 
-            <h1 style={{ margin: 0, fontSize: 34 }}>{trSafe('Host Dashboard')}</h1>
-
-            <p style={{ marginTop: 10, color: '#d4d4d8', maxWidth: 700, lineHeight: 1.5 }}>
-              {trSafe('Members can apply to become hosts, complete readiness steps, and prepare for approval.')}
+            <p style={{ marginTop: 10, color: '#d4d4d8', maxWidth: 760, lineHeight: 1.6 }}>
+              {trSafe(
+                'At LoveF8, Hosts have the opportunity to earn real money through tips while having genuine conversations with people who want to connect.'
+              )}
             </p>
+
+            <p style={{ marginTop: 10, color: '#d4d4d8', maxWidth: 760, lineHeight: 1.6 }}>
+              {trSafe(
+                'Many Hosts can earn $200 – $800+ per month while working flexible hours from home and choosing who they talk to.'
+              )}
+            </p>
+
+            <div style={{ marginTop: 18, maxWidth: 760 }}>
+              <div style={{ fontWeight: 700, marginBottom: 8, color: 'white' }}>
+                {trSafe('Why Hosts love it:')}
+              </div>
+
+              <div
+                style={{
+                  display: 'grid',
+                  gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))',
+                  gap: 10,
+                }}
+              >
+                <div
+                  style={{
+                    padding: 12,
+                    borderRadius: 14,
+                    background: '#18181b',
+                    border: '1px solid #27272a',
+                    color: '#f4f4f5',
+                  }}
+                >
+                  {trSafe('Get paid for being yourself')}
+                </div>
+
+                <div
+                  style={{
+                    padding: 12,
+                    borderRadius: 14,
+                    background: '#18181b',
+                    border: '1px solid #27272a',
+                    color: '#f4f4f5',
+                  }}
+                >
+                  {trSafe('No scripts or pressure')}
+                </div>
+
+                <div
+                  style={{
+                    padding: 12,
+                    borderRadius: 14,
+                    background: '#18181b',
+                    border: '1px solid #27272a',
+                    color: '#f4f4f5',
+                  }}
+                >
+                  {trSafe('Real conversations with real people')}
+                </div>
+
+                <div
+                  style={{
+                    padding: 12,
+                    borderRadius: 14,
+                    background: '#18181b',
+                    border: '1px solid #27272a',
+                    color: '#f4f4f5',
+                  }}
+                >
+                  {trSafe('Withdraw your earnings easily')}
+                </div>
+              </div>
+            </div>
+
+            <div
+              style={{
+                marginTop: 18,
+                padding: 14,
+                borderRadius: 16,
+                background: '#052e16',
+                border: '1px solid #14532d',
+                color: '#bbf7d0',
+                fontWeight: 700,
+                maxWidth: 760,
+                lineHeight: 1.5,
+              }}
+            >
+              {trSafe(
+                'Ready to get started? Complete your profile and verification to submit your Host application.'
+              )}
+            </div>
 
             <div
               style={{
