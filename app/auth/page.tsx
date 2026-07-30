@@ -153,7 +153,7 @@ export default function AuthPage() {
     setResetSending(true);
 
     const { error } = await supabase.auth.resetPasswordForEmail(clean, {
-  redirectTo: 'https://lovef8.com/auth/reset',
+  redirectTo: 'https://www.lovef8.com/auth/reset',
 });
 
     setResetSending(false);
